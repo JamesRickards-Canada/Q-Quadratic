@@ -1,4 +1,4 @@
-# Qquadratic; current version: 0.1
+# Q Quadratic; current version: 0.1
 A PARI/GP package for integral binary quadratic forms (and coming soon: quaternion algebras) over Q, with an emphasis on indefinite quadratic forms (and coming soon: indefinite quaternion algebras).
 Currently only the binary quadratic form methods have been implemented; the quaternion algebra methods should be ready by October 2020.
 
