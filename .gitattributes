@@ -1,2 +1,4 @@
 * linguist-vendored
 *.c linguist-detectable=false
+*.h linguist-detectable=true
+*.gp linguist-detectable=true
