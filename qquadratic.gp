@@ -1,30 +1,27 @@
-\\qq_base
+print("\n\nType '?qq' for help.\n\n");
+addhelp(qq, "For each package P, call ?P to access a basic description and list of methods. Installed packages: \n base \n bqf \n bqf_int \n geometry \n quat \n quat_int \n visual");
 
-	\\COMPLEX GEOMETRY
-		install("crossratio","GGGG","crossratio","./libqquadratic.so");
-		addhelp(crossratio, "Inputs a,b,c,d complex numbers or oo with at most one being oo.\\n Outputs the crossratio of [a,b;c,d].");
-		install("mat_eval_tc","GG","mat_eval","./libqquadratic.so");
-		addhelp(mat_eval, "Inputs M,x; M a matrix, and x number.\\n Outputs Mx with M acting via Mobius transformation. x=+/-oo is allowed.");
+\\qq_base
 
 	\\INFINITY
 		install("addoo","GG","addoo","./libqquadratic.so");
-		addhelp(addoo, "Inputs a,b real numbers or oo.\\n Outputs a+b, where if a or b is +/- oo, returns that back. Note that this will make oo+-oo=oo and -oo+oo=-oo");
+		addhelp(addoo, "Inputs a,b real numbers or oo.\n Outputs a+b, where if a or b is +/- oo, returns that back. Note that this will make oo+-oo=oo and -oo+oo=-oo");
 		install("divoo","GG","divoo","./libqquadratic.so");
-		addhelp(divoo, "Inputs a,b, real numbers or oo.\\n Outputs a/b, where oo is output if a=oo and b>=0 or a=-oo and b<0 or b=0 and a>=0 (outputs -oo under analogous assumptions).");
+		addhelp(divoo, "Inputs a,b, real numbers or oo.\n Outputs a/b, where oo is output if a=oo and b>=0 or a=-oo and b<0 or b=0 and a>=0 (outputs -oo under analogous assumptions).");
 
-	\\LINEAR EQUATIONS AND MATRICES
+	\\LINEAR ALGEBRA
 		install("lin_intsolve_tc","GGG","lin_intsolve","./libqquadratic.so");
-		addhelp(lin_intsolve, "Inputs A,B,n integers.\\n Outputs the general integral solutions to Ax+By=n. The format is [[s1,s2],[x0,y0]], where the general solution is x=s1*t+x0, y=s2*t+y0 for t an integer. The output is also reduced, i.e. gcd(s1,s2)=1. If A=B=0 or there are no integer solutions, returns 0.");
+		addhelp(lin_intsolve, "Inputs A,B,n integers.\n Outputs the general integral solutions to Ax+By=n. The format is [[s1,s2],[x0,y0]], where the general solution is x=s1*t+x0, y=s2*t+y0 for t an integer. The output is also reduced, i.e. gcd(s1,s2)=1. If A=B=0 or there are no integer solutions, returns 0.");
 		install("mat3_complete_tc", "GGG", "mat3_complete", "./libqquadratic.so");
-		addhelp(mat3_complete, "Inputs A,B,C integers with gcd 1.\\n Outputs a 3x3 integer matrix with determinant 1 whose top row is [A, B, C].");
+		addhelp(mat3_complete, "Inputs A,B,C integers with gcd 1.\n Outputs a 3x3 integer matrix with determinant 1 whose top row is [A, B, C].");
 
 	\\RANDOM
 		install("rand_elt","G","rand_elt","./libqquadratic.so");
-		addhelp(rand_elt, "Inputs v, a vector.\\n Outputs a random component of the vector.");
+		addhelp(rand_elt, "Inputs v, a vector.\n Outputs a random component of the vector.");
 
 	\\SOLVING EQUATIONS MOD N
 		install("sqmod_tc","GG","sqmod","./libqquadratic.so");
-		addhelp(sqmod, "Inputs: x,n: rational number x, integer n with gcd(n,denom(x))=1.\\n Solves y^2==x mod n, and outputs the solutions. The output format is 0 if no solutions, and [S,m] otherwise, where the solutions are y==S[i] modulo m.");
+		addhelp(sqmod, "Inputs: x,n: rational number x, integer n with gcd(n,denom(x))=1.\n Solves y^2==x mod n, and outputs the solutions. The output format is 0 if no solutions, and [S,m] otherwise, where the solutions are y==S[i] modulo m.");
 
 	\\TIME
 		install("printtime","v","printtime","./libqquadratic.so");
@@ -39,11 +36,10 @@
 		addhelp(mat_uptriag_rowred,"Input: A, an upper triangular matrix with real entries and positive diagonal.\n Outputs [A',S,Sinv], where A'=SA, S is unimodular (det 1 and integer matrix), Sinv is S^(-1). A' is chosen so that it is reduced in the sense of |A'[i,j]|<=1/2A'[j,j] for all j>i (biggest entry in a column is the diagonal element).");
 
 	\\GENERAL HELP
-		addhelp(base,"This package is a collection of miscellaneous methods that may be useful in a variety of settings, and not just for the programs they were originally created for \\n Subtopics: \\n Complex plane geometry (cpg) \\n Infinity (inf) \\n Integer linear equations and matrices (ilm) \\n Modulo n methods (modn) \\n Random (rand)\\n Time (time)");
-		addhelp(cpg,"crossratio, mat_eval.");
+		addhelp(base,"This package is a collection of miscellaneous methods that may be useful in a variety of settings, and not just for the programs they were originally created for \n Subtopics: \n Infinity (inf) \n Linear algebra (la) \n Random (rand) \n Square roots (root) \n Time (time)");
 		addhelp(inf,"addoo, divoo.");
-		addhelp(ilm,"lin_intsolve, mat3_complete.");
-		addhelp(modn,"sqmod.");
+		addhelp(la,"lin_intsolve, mat3_complete.");
+		addhelp(root,"sqmod.");
 		addhelp(rand,"rand_elt.");
 		addhelp(time,"printtime.");
 
@@ -168,23 +164,128 @@
 	\\GENERAL HELP
 		addhelp(bqf_int, "This package deals with intersections of binary quadratic forms with integer coefficients. \n Subtopics:\n Computing intersection numbers (intcomp)\n Properties of an intersection (intprop)");
 		addhelp(intcomp,"ibqf_int, ibqf_intRS, ibqf_intforms, ibqf_intformsRS, ibqf_intformsRO, ibqf_intformsLS, ibqf_intformsLO.");
-		addhelp(intprop,"bqf_bdelta, bqf_intlevel, ibqf_intpoint, hdist.");
+		addhelp(intprop,"bqf_bdelta, bqf_intlevel, ibqf_intpoint.");
 
+
+\\qq_geometry
+
+	\\BASIC LINE, CIRCLE, AND POINT OPERATIONS
+		install("arc_init_tc","GGGD0,L,p","arc_init","./libqquadratic.so");
+		addhelp(arc_init,"Inputs c, p1, p2, {dir=0}: circle/arc c, p1 and p2 points on the circle, dir=-1, 0, 1.\n Outputs the arc of c going counterclockwise from p1 to p2, where dir=1 means that is also the orientation, and dir=-1 means the orientation is backwards (and dir=0 means unoriented).");
+		install("arc_midpoint_tc","GGGp","arc_midpoint","./libqquadratic.so");
+		addhelp(arc_midpoint,"Inputs c, p1, p2: circle c, points p1, p2 on c.\n Outputs the midpoint of the counterclockwise arc on c from p1 to p2.");
+		install("circle_angle_tc","GGGp","circle_angle","./libqquadratic.so");
+		addhelp(circle_angle,"Inputs c1, c2, p: circles/arcs c1, c2 that intersect in the point p.\n Returns the angle of intersection between c1 and c2 at p, with the angle formed by rotating the tangent to c1 at p counterclockwise to the tangent to c2 at p.");
+		install("circle_fromcp","GGp","circle_fromcp","./libqquadratic.so");
+		addhelp(circle_fromcp,"Inputs cent, p: centre cent, and point p.\n Outputs the circle with centre cent and passing through point p.");
+		install("circle_fromppp_tc","GGGp","circle_fromppp","./libqquadratic.so");
+		addhelp(circle_fromppp,"Inputs p1, p2, p3: distinct complex points (oo is allowed).\n Outputs the circle that passes through p1, p2, p3. If they are collinear (including if one is oo), this will output the line going through them instead.");
+		install("circle_tangentslope_tc","GGp","circle_tangentslope","./libqquadratic.so");
+		addhelp(circle_tangentslope,"Inputs c, p: circle c and point p on the circle.\n Outputs the slope of the tangent to the circle at p.");
+		install("crossratio","GGGG","crossratio","./libqquadratic.so");
+		addhelp(crossratio, "Inputs a,b,c,d complex numbers or oo with at most one being oo.\n Outputs the crossratio of [a,b;c,d].");
+		install("line_angle","GGp","line_angle","./libqquadratic.so");
+		addhelp(line_angle,"Inputs l1, l2: lines l1, l2.\n Outputs the angle formed between l1 and l2, formed by rotating l1 counterclockwise to l2 (output is between 0 and Pi).");
+		install("line_fromsp","GG","line_fromsp","./libqquadratic.so");
+		addhelp(line_fromsp,"Inputs s, p: slope and point p.\n Outputs the line through p with slope s.");
+		install("line_frompp","GG","line_frompp","./libqquadratic.so");
+		addhelp(line_frompp,"Inputs p1, p2: distinct complex points.\n Outputs the line formed by p1 and p2.");
+		install("mat_eval_tc","GG","mat_eval","./libqquadratic.so");
+		addhelp(mat_eval, "Inputs M,x; M a matrix, and x number.\n Outputs Mx with M acting via Mobius transformation. x=+/-oo is allowed.");
+		install("midpoint","GG","midpoint","./libqquadratic.so");
+		addhelp(midpoint,"Inputs: p1, p2 complex points.\n Outputs the midpoint of the line segment from p1 to p2.");
+		install("mobius_tc","GGp","mobius","./libqquadratic.so");
+		addhelp(mobius,"Inputs M, c: matrix M, c a line/circle/segment/arc.\n Outputs Mc, the mobius map acting on c.");
+		install("perpbis","GG","perpbis","./libqquadratic.so");
+		addhelp(perpbis,"Input p1, p2, two distinct complex numbers.\n Outputs the perpendicular bisector.");
+		install("radialangle_tc","GGp","radialangle","./libqquadratic.so");
+		addhelp(radialangle,"Inputs c, p: c circle/circle arc, p point on c.\n Outputs the angle formed between the horizontal radius facing right to p, and in the range [0,2*Pi).");
+		install("slope","GG","slope","./libqquadratic.so");
+		addhelp(slope,"Inputs p1, p2: distinct complex points.\n Outputs the slope of the line through p1,p2");
+	
+	\\INTERSECTION OF LINES/CIRCLES
+		install("arc_int_tc","GGp","arc_int","./libqquadratic.so");
+		addhelp(arc_int,"Inputs c1, c2: circle arcs of circles that are not concentric.\n Outputs the intersection points of c1, c2 (of size 0,1,2).");
+		install("arcseg_int_tc","GGp","arcseg_int","./libqquadratic.so");
+		addhelp(arcseg_int,"Inputs c, l: arc c and segment l.\n Outputs the intersection points of c with l.");
+		install("circle_int_tc","GGp","circle_int","./libqquadratic.so");
+		addhelp(circle_int,"Input c1, c2: circles c1, c2 that are not concentric.\n Outputs the set of points in their intersection.");
+		install("circleline_int_tc","GGp","circleline_int","./libqquadratic.so");
+		addhelp(circleline_int,"Inputs c, l: circle and line.\n Outputs the intersection points of c and l.");
+		install("genseg_int_tc","GGp","genseg_int","./libqquadratic.so");
+		addhelp(genseg_int,"Inputs s1, s2: circles/arcs/lines/segmentss.\n Outputs the intersection points of s1 and s2.");
+		install("line_int_tc","GGp","line_int","./libqquadratic.so");
+		addhelp(line_int,"Inputs l1, l2: lines.\n Outputs the intersection point of the two lines. If the lines are parallel, outputs oo.");
+		install("onarc_tc","lGGp","onarc","./libqquadratic.so");
+		addhelp(onarc,"Inputs c, p: circle arc c, point p assumed to be on the circle defined by c.\n Returns 1 if p is on the arc c (running counterclockwise from c[3] to c[4]). A circle can be inputted, and the function will trivially return 1.");
+		install("onseg_tc","lGGp","onseg","./libqquadratic.so");
+		addhelp(onseg,"Inputs l, p: line segment and point on it.\n Returns 1 if p is on the line segment l and 0 else.");
+		install("seg_int_tc","GGp","seg_int","./libqquadratic.so");
+		addhelp(seg_int,"Inputs l1, l2: line segmentss.\n Returns the intersection points of the line segments (length 0 or 1 vector).");
+
+	\\DISTANCES
+		install("hdist_tc","GGp","hdist","./libqquadratic.so");
+		addhelp(hdist,"Inputs z1, z2 complex numbers in the upper half plane.\n Returns the hyperbolic distance between z1 and z2.");
+		install("hdist_ud","GGp","hdist_ud","./libqquadratic.so");
+		addhelp(hdist_ud,"Inputs z1, z2 complex numbers inside the unit disc.\n Returns the hyperbolic distance between z1 and z2 in the unit disc model.");
+		install("hpolygon_area_tc","GGp","hpolygon_area","./libqquadratic.so");
+		addhelp(hpolygon_area,"Input circles, vertices: the vectors of circles and vertices forming the edges of the polygon in the unit circle model (circles[i], circles[i+1] intersect at vertices[i]).\n Returns the area of the corresponding hyperbolic polygon. If there are edges on the unit circle (corresponding to circles[i]=0), the output is oo.");
+
+	\\FUNDAMENTAL DOMAIN COMPUTATION
+		install("edgepairing_tc","Gp","edgepairing","./libqquadratic.so");
+		addhelp(edgepairing,"Input U, a normalized boundary.\n Returns [vp, vunp], where vp is a vector containing vecsmalls of paired edges, and vunp is a vector containing vecsmalls of [gind, i1ind] or [gind, i1ind, i2ind], where gind is the index of an unpaired side, and i1ind (and i2ind if there) are the unpaired vertices of the side.");
+		install("normalizedboundary_outside_tc","lGGp","normalizedboundary_outside","./libqquadratic.so");
+		addhelp(normalizedboundary_outside,"Inputs U, z: normalized boundary U, point z in the unit disc (not including the boundary).\n Returns -1 if z is inside U or on the boundary, and ind if z is outside U (i.e. between U and the edge of the unit disc), where ind is the index of the side between 0 and z.");
+		install("randompoint_ud","Gp","randompoint_ud","./libqquadratic.so");
+		addhelp(randompoint_ud,"Input R, positive real number.\n Returns a (uniform) random point in the unit disc of hyperbolic distance at most R from 0.");
+		install("rootgeodesic_uhp_tc","Gp","rootgeodesic_uhp","./libqquadratic.so");
+		addhelp(rootgeodesic_uhp,"Input M, a 2x2 hyperbolic matrix in PSL(2, R).\n Returns the upper half plane root geodesic of M.");
+
+	\\PRINTING TO PLOTVIEWER
+		install("python_printarcs","vGrD0,L,Drp","python_printarcs","./libqquadratic.so");
+		addhelp(python_printarcs,"Inputs arcs, filename, {view=0}, {extrainput=NULL}: a set of arcs arcs, string filename, view=0, 1, and extrainput=NULL or a string.\n Prints the arcs specified by arcs to the file fdoms/filename.dat, ready for plotviewer. If view=1, calls plotviewer with the additional input of extrainput if you want to include other arcs/fundamental domains.");
+		install("python_plotviewer","vr","python_plotviewer","./libqquadratic.so");
+		addhelp(python_plotviewer,"Input S: string denoting the file names of data fundamental domains/geodesics.\n Launches the python file fdviewer.py to view the domain/geodesics. Enter the files separated by spaces (they must be stored in the sub-folder 'fdoms').");
+		install("python_printfdom","vGrp","python_printfdom","./libqquadratic.so");
+		addhelp(python_printfdom,"Input U, filename: fundamental domain U, string filename.\n Prints the fundamental domain U to the file fdoms/filename.dat, ready for the plot viewer. The filename must start with 'fd' to work properly.")
+
+	\\HELPER METHODS
+		install("atanoo","Gp","atanoo","./libqquadratic.so");
+		addhelp(atanoo,"Inputs x, a real number or oo.\n Returns atan(x), with the convention of atan(oo)=Pi/2.");
+		install("shiftangle","GGp","shiftangle","./libqquadratic.so");
+		addhelp(shiftangle,"Inputs ang, bot: angles ang and bot.\n Returns ang+2*Pi*N for the unique integer N such that bot<=ang+2*Pi*N<bot+2*Pi.");
+		/*install("tolcmp","lGGGp","tolcmp","./libqquadratic.so");
+		addhelp(tolcmp,"Inputs x, y, tol: real numbers x, y, positive real tol.\n Returns 1  if x>y, 0 if x==y, and -1 if x<y. This computes if x==y up to tolerance, i.e. if one of x, y is not exact, will return 0 iff |x-y|<tol.");
+		install("toleq","lGGGp","toleq","./libqquadratic.so");
+		addhelp(toleq,"Inputs x, y, tol: complex numbers x, y, positive real tol.\n Computes if x==y up to the tolerance tol. If x and y are exact objects, ignores tolerance, and otherwise returns 1 iff |x-y|<tol.");*/
+		
+	\\GENERAL HELP
+		addhelp(geometry,"This package deals with geometry in the complex plane. Points are complex numbers, with oo being the point at infinity. Circles/lines are represented by length 3 vectors, and circe arcs/line segments are length 8 vectors.\n Subtopics:\n geometryfunctions \n circles \n lines\n hyperbolic distances (hdist)\n fundamental domains (fd)");
+
+		addhelp(geometryfunctions,"arc_init, arc_int, arc_midpoint, arcseg_int, atanoo, circle_angle, circle_fromcp, circle_fromppp, circle_int, circle_tangentslope, circleline_int, crossratio, genseg_int, hdist, hdist_ud, hpolygon_area, line_angle, line_fromsp, line_frompp, line_int, mat_eval, midpoint, mobius, onarc, onseg, perpbis, radialangle, seg_int, shiftangle, slope.");
+
+		addhelp(circles,"A circle is stored as a vector [c, r, 0], where c is the centre, and r is the radius. The third entry is to distinguish a circle from a line.\n A circle arc is stored as a vector [c, r, p1, p2, p1ang, p2ang, dir, 0], where c,r are the centre and radius, p1 and p2 are the start and endpoints of the arc. We take the arc going counterclockwise from p1 to p2, and dir=1 means it is oriented from p1 to p2, and dir=-1 means it is oriented from p2 to p1. p1ang and p2ang are the radial angles to p1 and p2 from c, so that 0<p2-p1<2*Pi. The final 0 is to distinguish from a line segment.\n Relevant functions are:\n arc_init, arc_int, arc_midpoint, arcseg_int, circle_angle, circle_fromcp, circle_fromppp, circle_int, circle_tangentslope, circleline_int, genseg_int, mobius, onarc, radialangle.");
+
+		addhelp(lines,"A line is stored as a vector [s, b, 1], where s is the slope, and b is the y-intercept if s!=oo, and the x-intercept if s=oo. The third entry is to distinguish a circle from a line.\n A line segment is stored as a vector [s, b, p1, p2, 0, ooendptor, dir, 1], where s, b are as before, and p1 and p2 are the start and endpoints of the segment. If neither endpoint is oo, then dir=1 means the segment from p1 to p2 in the upper half plane, and dir=-1 means the segment passing through oo. When one endpoint is oo, ooendptor=1 means the ray from p1 to p2 that is either pointing straight up or to the right, and ooendptor=-1 is pointing straight down or left. The final 1 is to distinguish from a circle arc.\n Relevant functions are:\n arcseg_int, circleline_int, genseg_int, line_angle, line_fromsp, line_frompp, line_int, midpoint, mobius, onseg, perpbis, seg_int, slope.");
+
+		addhelp(hdist,"Hyperbolic distance/area functions: hdist, hdist_ud, hpolygon_area.");
+
+		addhelp(fd,"Most of the fundamental domain methods are PARI-accessible only. The few available here are: edgepairing, normalizedboundary_outside, python_printarcs, python_plotviewer, python_printfdom, randompoint_ud, rootgeodesic_uhp.");
 
 \\qq_quat
 
 
 	\\BASIC OPERATIONS ON ELEMENTS IN QUATERNION ALGEBRAS 
 		install("qa_conj_tc","G","qa_conj","./libqquadratic.so");
-		addhelp(qa_conj,"Input x, element of a quaternion algebra.\n Outputs the conjugate of x.");
+		addhelp(qa_conj,"Input x, element of a quaternion algebra.\n Returns the conjugate of x.");
 		install("qa_conjby_tc","GGG","qa_conjby","./libqquadratic.so");
-		addhelp(qa_conjby,"Inputs Q, x, y: quaternion algebra Q, elements x, y with y invertible.\n Outputs yxy^(-1).");
+		addhelp(qa_conjby,"Inputs Q, x, y: quaternion algebra Q, elements x, y with y invertible.\n Returns yxy^(-1).");
 		install("qa_inv_tc","GG","qa_inv","./libqquadratic.so");
 		addhelp(qa_inv,"Inputs Q, x; quaternion algebra Q, element x. Returns x^(-1), and produces an error if x is not invertible");
 		install("qa_m2rembed_tc","GG","qa_m2rembed","./libqquadratic.so");
-		addhelp(qa_m2rembed,"Inputs Q, x; indefinite quaternion algebra Q, element x.\n Outputs image of x under standard embedding of Q into M(2,R) (requires a>0).");
+		addhelp(qa_m2rembed,"Inputs Q, x; indefinite quaternion algebra Q, element x.\n Returns image of x under standard embedding of Q into M(2,R) (requires a>0).");
 		install("qa_minpoly_tc","GG","qa_minpoly","./libqquadratic.so");
-		addhelp(qa_minpoly,"Inputs Q, x; Q a quaternion algebra, x in Q.\n Outputs the minimal polynomial of x. The format is [1,b,c] for x^2+bx+c, and [1,b] for x+b");
+		addhelp(qa_minpoly,"Inputs Q, x; Q a quaternion algebra, x in Q.\n Returns the minimal polynomial of x. The format is [1,b,c] for x^2+bx+c, and [1,b] for x+b");
 		install("qa_mul_tc","GGG","qa_mul","./libqquadratic.so");
 		addhelp(qa_mul,"Inputs Q, x, y; quaternion algebra Q, elements x, y.\n Returns x*y.");
 		install("qa_mulvec_tc","GG","qa_mulvec","./libqquadratic.so");
@@ -192,15 +293,15 @@
 		install("qa_mulvecindices_tc","GGG","qa_mulvecindices","./libqquadratic.so");
 		addhelp(qa_mulvecindices,"Inputs Q, L, indices: quaternion algebra Q, vector of elements of Q, vector (or vecsmall) of indices.\n Returns L[indices[1]]*L[indices[2]]*...*L[indices[n]].");
 		install("qa_norm_tc", "GG", "qa_norm","./libqquadratic.so");
-		addhelp(qa_norm,"Inputs Q, x; Q a quaternion algebra, x in Q.\n Outputs the norm of x.");
+		addhelp(qa_norm,"Inputs Q, x; Q a quaternion algebra, x in Q.\n Returns the norm of x.");
 		install("qa_pow_tc","GGG","qa_pow","./libqquadratic.so");
-		addhelp(qa_pow,"Inputs Q, x, n; quaternion algebra Q, element x, integer n.\n Outputs x^n.");
+		addhelp(qa_pow,"Inputs Q, x, n; quaternion algebra Q, element x, integer n.\n Returns x^n.");
 		install("qa_roots_tc","GGp","qa_roots","./libqquadratic.so");
-		addhelp(qa_roots,"Inputs Q, x; indefinite quaternion algebra Q, element x with positive norm and hyperbolic (trace^2>4*norm).\n Outputs the vector [rt1, rt2] of first root, second root of x under the standard embedding into SL(2,R).");
+		addhelp(qa_roots,"Inputs Q, x; indefinite quaternion algebra Q, element x with positive norm and hyperbolic (trace^2>4*norm).\n Returns the vector [rt1, rt2] of first root, second root of x under the standard embedding into SL(2,R).");
 		install("qa_square_tc","GG","qa_square","./libqquadratic.so");
-		addhelp(qa_square,"Inputs Q, x: quaternion algebra Q, element x.\n Outputs x^2.");
+		addhelp(qa_square,"Inputs Q, x: quaternion algebra Q, element x.\n Returns x^2.");
 		install("qa_trace_tc","G","qa_trace","./libqquadratic.so");
-		addhelp(qa_trace,"Input x, element of a quaternion algebra.\n Outputs the trace of x");
+		addhelp(qa_trace,"Input x, element of a quaternion algebra.\n Returns the trace of x");
 
 	\\BASIC OPERATIONS ON ORDERS/LATTICES IN QUATERNION ALGEBRAS 
 		install("qa_isinorder_tc","lGGG","qa_isinorder","./libqquadratic.so");
@@ -223,6 +324,8 @@
 		addhelp(qa_eichlerorder,"Inputs Q, l, {maxord=0}: quaternion algebra Q, positive integer l, maximal order of Q or 0 maxord.\n Returns an Eichler order of Q of level l, which is contained in maxord if set to being non-zero.");
 		install("qa_ord_init_tc","GG","qa_ord_init","./libqquadratic.so");
 		addhelp(qa_ord_init,"Inputs: Q, ord: a quaternion algebra and an order.\n Outputs the initialization of the order: [ord, type, [d1, d2, d3, d4], level, prime factorization of the level]. ord is the hnf of the inputted ord, and d_n is the maximal denominator of the nth coefficient (i.e. 1, i, j, k). type=-1 means general order, type=0 means Maximal, type=1 means Eichler.");
+		install("qa_init_ab_tc","GG","qa_init_ab","./libqquadratic.so");
+		addhelp(qa_init_ab,"Inputs a, b: non-zero integers.\n Returns the quaternion algebra B=(a, b/Q).");
 		install("qa_init_primes_tc","G","qa_init_primes","./libqquadratic.so");
 		addhelp(qa_init_primes,"Input pset, a list of primes (or oo).\n Outputs a quaternion algebra Q with ramification at the specified set of primes. If the list has odd length, then automatically adds oo to the ramification set.");
 		install("qa_init_2primes_tc","GG","qa_init_2primes","./libqquadratic.so");
@@ -269,10 +372,10 @@
 		addhelp(qa_normalizedbasis,"Inputs Q, G, p: indefinite quaternion algebra Q, vector of norm 1 elements, upper half plane point p OR normalized boundary.\n Returns the normalized basis of G with respect to p; if p is a normalized boundary, we add G to it and compute the normalized basis. This is the normalized boundary of <G> (or <G union p[1]>), hence the fundamental domain if G (or <G union p[1]>) spans the group.");
 		install("qa_normalizedboundary_tc","GGGp","qa_normalizedboundary","./libqquadratic.so");
 		addhelp(qa_normalizedboundary,"Inputs Q, G, p: indefinite quaternion algebra Q, vector of norm 1 elements, upper half plane point p.\n Returns the normalized boundary of G, i.e. the union of the exteriors of the isometric circles of G. The output is [elements, icircs, vertices, vertex angles, matrices, area, 0]. The circle corresponding to elements[i] is icircs[i], and the vertices are vertices[i-1] and vertices[i]. angle[i] is the angle between elements[i] and elements[i+1], and matrices[i] is the image in PSU(1,1) of elements[i]. The element 1 corresponds to a section on the unit circle, which also corresponds to an angle and circle of -1. Vertex angles stores the angles to each of the vertices, the area is the area, and the side pairing stores the side pairing for fundamental domains (this function returns it as 0 however, as we assume that we are not a fundamental domain).");
-		install("qa_printisometriccircles_tc","vGGGrD0,L,p","qa_printisocircs","./libqquadratic.so");
-		addhelp(qa_printisocircs, "Inputs Q, L, p, filename, {view=0}: indefinite quaternion algebra Q, vector L of norm 1 elements, upper half plane point p, file name filename, {view=0, 1}.\n Prints the isometric circles corresponding to L and p to fdoms/filename.dat, ready for the plotviewer. If view=1, calls the plotviewer to view the geodesics.");
+		install("qa_printisometriccircles_tc","vGGGrD0,L,p","qa_printisometriccircles","./libqquadratic.so");
+		addhelp(qa_printisometriccircles, "Inputs Q, L, p, filename, {view=0}: indefinite quaternion algebra Q, vector L of norm 1 elements, upper half plane point p, file name filename, {view=0, 1}.\n Prints the isometric circles corresponding to L and p to fdoms/filename.dat, ready for the plotviewer. If view=1, calls the plotviewer to view the geodesics.");
 		install("qa_reduceelt_tc","GGGD0,G,D0,G,p","qa_reduceelt","./libqquadratic.so");
-		addhelp(qa_reduceelt,"Inputs Q, G, x, {z=0}, {p=0}: indefinite quaternion algebra Q, set G of elements of norm 1 OR a normalized boundary, element g of norm 1 in Q, point z in unit disc, point p in upper half plane.\n Outputs the triple [gammabar, delta, decomp], where gammabar=delta*g is (G,z)-reduced (i.e. distance between gammabar*z and 0 is less than or equal to the distance between g'*gammabar*z for all g' in G), and decomp is the vecsmall [i1, i2, ..., in] with delta=G[i1]*G[i2]*...*G[in]. If G is a normalized boundary, this method is a fair bit faster, and the value p does not need to be inputted (z can be inputted as non-zero if desired).");
+		addhelp(qa_reduceelt,"Inputs Q, G, g, {z=0}, {p=0}: indefinite quaternion algebra Q, set G of elements of norm 1 OR a normalized boundary, element g of norm 1 in Q, point z in unit disc, point p in upper half plane.\n Outputs the triple [gammabar, delta, decomp], where gammabar=delta*g is (G,z)-reduced (i.e. distance between gammabar*z and 0 is less than or equal to the distance between g'*gammabar*z for all g' in G), and decomp is the vecsmall [i1, i2, ..., in] with delta=G[i1]*G[i2]*...*G[in]. If G is a normalized boundary, this method is a fair bit faster, and the value p does not need to be inputted (z can be inputted as non-zero if desired).");
 		install("qa_rootgeodesic_fd_tc","GGGp","qa_rootgeodesic_fd","./libqquadratic.so");
 		addhelp(qa_rootgeodesic_fd,"Inputs Q, U, g: indefinite quaternion algebra Q, fundamental domain of an Eichler order in Q U, non-rational element g.\n Returns the root geodesic of g in the fundamental domain. The format is [g's, circle arcs, vecsmall(sides hit), vecsmall(sides emenating from)].");
 		install("qa_smallnorm1elts_tc","GGGGGD0,G,p","qa_smallnorm1elts","./libqquadratic.so");
@@ -322,102 +425,6 @@
 	\\GENERAL HELP
 		\\TO DO!!!!
 
-
-\\qq_geometry
-
-	\\BASIC LINE, CIRCLE, AND POINT OPERATIONS
-		install("arc_init_tc","GGGD0,L,p","arc_init","./libqquadratic.so");
-		addhelp(arc_init,"Inputs c, p1, p2, {dir=0}: circle/arc c, p1 and p2 points on the circle, dir=-1, 0, 1.\n Outputs the arc of c going counterclockwise from p1 to p2, where dir=1 means that is also the orientation, and dir=-1 means the orientation is backwards (and dir=0 means unoriented).");
-		install("arc_midpoint_tc","GGGp","arc_midpoint","./libqquadratic.so");
-		addhelp(arc_midpoint,"Inputs c, p1, p2: circle c, points p1, p2 on c.\n Outputs the midpoint of the counterclockwise arc on c from p1 to p2.");
-		install("circle_fromcp","GGp","circle_fromcp","./libqquadratic.so");
-		addhelp(circle_fromcp,"Inputs cent, p: centre cent, and point p.\n Outputs the circle with centre cent and passing through point p.");
-		install("circle_fromppp_tc","GGGp","circle_fromppp","./libqquadratic.so");
-		addhelp(circle_fromppp,"Inputs p1, p2, p3: distinct complex points (oo is allowed).\n Outputs the circle that passes through p1, p2, p3. If they are collinear (including if one is oo), this will output the line going through them instead.");
-		install("circle_tangentslope_tc","GGp","circle_tangentslope","./libqquadratic.so");
-		addhelp(circle_tangentslope,"Inputs c, p: circle c and point p on the circle.\n Outputs the slope of the tangent to the circle at p.");
-		install("line_angle","GGp","line_angle","./libqquadratic.so");
-		addhelp(line_angle,"Inputs l1, l2: lines l1, l2.\n Outputs the angle formed between l1 and l2, formed by rotating l1 counterclockwise to l2 (output is between 0 and Pi).");
-		install("line_fromsp","GG","line_fromsp","./libqquadratic.so");
-		addhelp(line_fromsp,"Inputs s, p: slope and point p.\n Outputs the line through p with slope s.");
-		install("line_frompp","GG","line_frompp","./libqquadratic.so");
-		addhelp(line_frompp,"Inputs p1, p2: distinct complex points.\n Outputs the line formed by p1 and p2.");
-		install("midpoint","GG","midpoint","./libqquadratic.so");
-		addhelp(midpoint,"Inputs: p1, p2 complex points.\n Outputs the midpoint of the line segment from p1 to p2.");
-		install("mobius_tc","GGp","mobius","./libqquadratic.so");
-		addhelp(mobius,"Inputs M, c: matrix M, c a line/circle/segment/arc.\n Outputs Mc, the mobius map acting on c.");
-		install("perpbis","GG","perpbis","./libqquadratic.so");
-		addhelp(perpbis,"Input p1, p2, two distinct complex numbers.\n Outputs the perpendicular bisector.");
-		install("radialangle_tc","GGp","radialangle","./libqquadratic.so");
-		addhelp(radialangle,"Inputs c, p: c circle/circle arc, p point on c.\n Outputs the angle formed between the horizontal radius facing right to p, and in the range [0,2*Pi).");
-		install("slope","GG","slope","./libqquadratic.so");
-		addhelp(slope,"Inputs p1, p2: distinct complex points.\n Outputs the slope of the line through p1,p2");
-	
-	\\INTERSECTION OF LINES/CIRCLES
-		install("arc_int_tc","GGp","arc_int","./libqquadratic.so");
-		addhelp(arc_int,"Inputs c1, c2: circle arcs of circles that are not concentric.\n Outputs the intersection points of c1, c2 (of size 0,1,2).");
-		install("arcseg_int_tc","GGp","arcseg_int","./libqquadratic.so");
-		addhelp(arcseg_int,"Inputs c, l: arc c and segment l.\n Outputs the intersection points of c with l.");
-		install("circle_int_tc","GGp","circle_int","./libqquadratic.so");
-		addhelp(circle_int,"Input c1, c2: circles c1, c2 that are not concentric.\n Outputs the set of points in their intersection.");
-		install("circleline_int_tc","GGp","circleline_int","./libqquadratic.so");
-		addhelp(circleline_int,"Inputs c, l: circle and line.\n Outputs the intersection points of c and l.");
-		install("genseg_int_tc","GGp","genseg_int","./libqquadratic.so");
-		addhelp(genseg_int,"Inputs s1, s2: circles/arcs/lines/segmentss.\n Outputs the intersection points of s1 and s2.");
-		install("line_int_tc","GGp","line_int","./libqquadratic.so");
-		addhelp(line_int,"Inputs l1, l2: lines.\n Outputs the intersection point of the two lines. If the lines are parallel, outputs oo.");
-		install("onarc_tc","lGGp","onarc","./libqquadratic.so");
-		addhelp(onarc,"Inputs c, p: circle arc c, point p assumed to be on the circle defined by c.\n Returns 1 if p is on the arc c (running counterclockwise from c[3] to c[4]). A circle can be inputted, and the function will trivially return 1.");
-		install("onseg_tc","lGGp","onseg","./libqquadratic.so");
-		addhelp(onseg,"Inputs l, p: line segment and point on it.\n Outputs 1 if p is on the line segment l and 0 else.");
-		install("seg_int_tc","GGp","seg_int","./libqquadratic.so");
-		addhelp(seg_int,"Inputs l1, l2: line segmentss.\n Outputs the intersection points of the line segments (length 0 or 1 vector).");
-
-	\\DISTANCES
-		install("hdist_tc","GGp","hdist","./libqquadratic.so");
-		addhelp(hdist,"Inputs z1, z2 complex numbers in the upper half plane.\n Outputs the hyperbolic distance between z1 and z2.");
-		install("hdist_ud","GGp","hdist_ud","./libqquadratic.so");
-		addhelp(hdist_ud,"Inputs z1, z2 complex numbers inside the unit disc.\n Outputs the hyperbolic distance between z1 and z2 in the unit disc model.");
-		install("hpolygon_area_tc","GGp","hpolygon_area","./libqquadratic.so");
-		addhelp(hpolygon_area,"Input circles, vertices: the vectors of circles and vertices forming the edges of the polygon (circles[i], circles[i+1] intersect at vertices[i]).\n Outputs the area of the corresponding hyperbolic polygon. If there are edges on the unit circle (corresponding to circles[i]=0), the output is oo.");
-
-	\\FUNDAMENTAL DOMAIN COMPUTATION
-		install("edgepairing_tc","Gp","edgepairing","./libqquadratic.so");
-		addhelp(edgepairing,"Input U, a normalized boundary.\n Returns [vp, vunp], where vp is a vector containing vecsmalls of paired edges, and vunp is a vector containing vecsmalls of [gind, i1ind] or [gind, i1ind, i2ind], where gind is the index of an unpaired side, and i1ind (and i2ind if there) are the unpaired vertices of the side.");
-		install("normalizedboundary_outside_tc","lGGp","normalizedboundary_outside","./libqquadratic.so");
-		addhelp(normalizedboundary_outside,"Inputs U, z: normalized boundary U, point z in the unit disc (not including the boundary).\n Returns -1 if z is inside U or on the boundary, and ind if z is outside U (i.e. between U and the edge of the unit disc), where ind is the index of the side between 0 and z.");
-		install("randompoint_ud","Gp","randompoint_ud","./libqquadratic.so");
-		addhelp(randompoint_ud,"Input R, positive real number.\n Outputs a (uniform) random point in the unit disc of hyperbolic distance at most R from 0.");
-		install("rootgeodesic_uhp_tc","Gp","rootgeodesic_uhp","./libqquadratic.so");
-		addhelp(rootgeodesic_uhp,"Input M, a 2x2 hyperbolic matrix in PSL(2, R).\n Returns the upper half plane root geodesic of M.");
-
-	\\PRINTING TO PLOTVIEWER
-		install("python_printarcs","vGrD0,L,Drp","python_printarcs","./libqquadratic.so");
-		addhelp(python_printarcs,"Inputs arcs, filename, {view=0}, {extrainput=NULL}: a set of arcs arcs, string filename, view=0, 1, and extrainput=NULL or a string.\n Prints the arcs specified by arcs to the file filename.dat, ready for plotviewer. If view=1, calls plotviewer with the additional input of extrainput if you want to include other arcs/fundamental domains.");
-		install("python_plotviewer","vr","python_plotviewer","./libqquadratic.so");
-		addhelp(python_plotviewer,"Input S: string denoting the file names of data fundamental domains/geodesics.\n Launches the python file plotviewer to view the domain/geodesics. Enter the files separated by spaces.");
-		install("python_printfdom","vGrp","python_printfdom","./libqquadratic.so");
-		\\void python_printfdom(GEN U, char *filename, long prec)
-
-	\\HELPER METHODS
-		install("atanoo","Gp","atanoo","./libqquadratic.so");
-		addhelp(atanoo,"Inputs x, a real number or oo.\n Outputs atan(x), with the convention of atan(oo)=Pi/2.");
-		install("shiftangle","GGp","shiftangle","./libqquadratic.so");
-		addhelp(shiftangle,"Inputs ang, bot: angles ang and bot.\n Outputs ang+2*Pi*N for the unique integer N such that bot<=ang+2*Pi*N<bot+2*Pi.");
-		/*install("tolcmp","lGGGp","tolcmp","./libqquadratic.so");
-		addhelp(tolcmp,"Inputs x, y, tol: real numbers x, y, positive real tol.\n Returns 1  if x>y, 0 if x==y, and -1 if x<y. This computes if x==y up to tolerance, i.e. if one of x, y is not exact, will return 0 iff |x-y|<tol.");
-		install("toleq","lGGGp","toleq","./libqquadratic.so");
-		addhelp(toleq,"Inputs x, y, tol: complex numbers x, y, positive real tol.\n Computes if x==y up to the tolerance tol. If x and y are exact objects, ignores tolerance, and otherwise returns 1 iff |x-y|<tol.");*/
-		
-	\\GENERAL HELP
-		addhelp(geometry,"This package deals with geometry in the complex plane. Points are complex numbers, with oo being the point at infinity. Circles/lines are represented by length 3 vectors, and circe arcs/line segments are length 8 vectors.\n Subtopics:\n geometryfunctions \n circles \n lines");
-
-		addhelp(geometryfunctions,"arc_init, arc_int, arc_midpoint, arcseg_int, atanoo, circle_fromcp, circle_fromppp, circle_int, circle_tangentslope, circleline_int, genseg_int, hdist, hdist_ud, line_angle, line_fromsp, line_frompp, line_int, midpoint, mobius, onarc, onseg, perpbis, radialangle, seg_int, shiftangle, slope.");
-
-		addhelp(circles,"A circle is stored as a vector [c, r, 0], where c is the centre, and r is the radius. The third entry is to distinguish a circle from a line.\n A circle arc is stored as a vector [c, r, p1, p2, p1ang, p2ang, dir, 0], where c,r are the centre and radius, p1 and p2 are the start and endpoints of the arc. We take the arc going counterclockwise from p1 to p2, and dir=1 means it is oriented from p1 to p2, and dir=-1 means it is oriented from p2 to p1. p1ang and p2ang are the radial angles to p1 and p2 from c, so that 0<p2-p1<2*Pi. The final 0 is to distinguish from a line segment.\n Relevant functions are:\n arc_init, arc_int, arc_midpoint, arcseg_int, circle_fromcp, circle_fromppp, circle_int, circle_tangentslope, circleline_int, genseg_int, mobius, onarc, radialangle.");
-
-		addhelp(lines,"A line is stored as a vector [s, b, 1], where s is the slope, and b is the y-intercept if s!=oo, and the x-intercept if s=oo. The third entry is to distinguish a circle from a line.\n A line segment is stored as a vector [s, b, p1, p2, 0, ooendptor, dir, 1], where s, b are as before, and p1 and p2 are the start and endpoints of the segment. If neither endpoint is oo, then dir=1 means the segment from p1 to p2 in the upper half plane, and dir=-1 means the segment passing through oo. When one endpoint is oo, ooendptor=1 means the ray from p1 to p2 that is either pointing straight up or to the right, and ooendptor=-1 is pointing straight down or left. The final 1 is to distinguish from a circle arc.\n Relevant functions are:\n arcseg_int, circleline_int, genseg_int, line_angle, line_fromsp, line_frompp, line_int, midpoint, mobius, onseg, perpbis, seg_int, slope.");
-	
 
 \\qq_visual
 
