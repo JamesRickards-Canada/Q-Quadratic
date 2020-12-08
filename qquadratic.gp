@@ -38,7 +38,7 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 	\\GENERAL HELP
 		addhelp(base,"This package is a collection of miscellaneous methods that may be useful in a variety of settings, and not just for the programs they were originally created for \n Subtopics: \n Infinity (inf) \n Linear algebra (la) \n Random (rand) \n Square roots (root) \n Time (time)");
 		addhelp(inf,"addoo, divoo.");
-		addhelp(la,"lin_intsolve, mat3_complete.");
+		addhelp(la,"lat_smallvectors, lin_intsolve, mat_choleskydecomp, mat_uptriag_rowred, mat3_complete.");
 		addhelp(root,"sqmod.");
 		addhelp(rand,"rand_elt.");
 		addhelp(time,"printtime.");
@@ -397,8 +397,14 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 
 
 	\\GENERAL HELP
-		\\TO DO!!!!!!!!!!!!!!!!!!!!!!
-
+		addhelp(quat, "This package deals with quaternion algebras.\n Subtopics:\n Basic operations on elements (qabasic)\n Basic operations on orders (qaordbasic)\n Initialization methods (qainit)\n Conjugation of elements in a given order (qaconj)\n Embedding quadratic orders (qaemb)\n Fundamental domain (qafdom)\n Supporting methods (qasupport)");
+		addhelp(qabasic, "qa_conj, qa_conjby, qa_inv, qa_m2rembed, qa_minpoly, qa_mul, qa_mulvec, qa_mulvecindices, qa_norm, qa_pow, qa_roots, qa_square, qa_trace.");
+		addhelp(qaordbasic, "qa_isinorder, qa_isorder, qa_leftorder, qa_rightorder, qa_ord_conj, qa_ord_disc, qa_superorders.");
+		addhelp(qainit, "qa_eichlerorder, qa_ord_init, qa_init_ab, qa_init_primes, qa_init_2primes, qa_maximalorder, qa_ram_fromab");
+		addhelp(qaconj, "qa_conjbasis, qa_conjqf, qa_conjnorm, qa_simulconj")
+		addhelp(qaemb, "qa_associatedemb, qa_embed, qa_embeddablediscs, qa_numemb, qa_ordiffer, qa_orinfinite, qa_sortedembed.");
+		addhelp(qafdom, "qa_fundamentaldomain, qa_fdarea, qa_isometriccircle, qa_normalizedbasis, qa_normalizedboundary, qa_printisometriccircles, qa_reduceelt, qa_rootgeodesic_fd, qa_smallnorm1elts, qa_topsu.");
+		addhelp(qasupport, "module_intersect, powerset, prime_ksearch, QM_hnf, vecratio.");
 
 \\qq_quat_int
 
@@ -423,7 +429,7 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 		addhelp(qa_intlevel,"Inputs Q, order, e1, e2, {D1=0}, {D2=0}: indefinite quaternion algebra Q, initialized Eichler order order, embeddings e1, e2 of discriminants D1, D2 (which do not need to be passed in).\n Outputs the pair [signed level,x] corresponding to the embedding pair.");
 	
 	\\GENERAL HELP
-		\\TO DO!!!!
+		addhelp(quat_int, "This package deals with intersection numbers of optimal embeddings.\n Methods:\n qa_intlevel, qa_inum_fd, qa_inum_roots, qa_inum_x, qa_xlink, qa_xposs.");
 
 
 \\qq_visual
@@ -443,5 +449,5 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 	\\GENERAL HELP
 		addhelp(visual,"This package deals with visualizing data. Subtopics:\n Histograms (hist)");
 		
-		addhelp(hist,"hist_make, hist_rebin, hist_recompile, hist_rerange, hist_rescale");
+		addhelp(hist,"hist_make, hist_rebin, hist_recompile, hist_rerange, hist_rescale.");
 
