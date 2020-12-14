@@ -1,7 +1,9 @@
+#Start with some constant definitions
 PARI_LIB = /usr/local/lib
 PARI_INCLUDE = /usr/local/include
 
-OBJS = qq_bqf.o qq_geometry.o qq_quat_int.o qq_base.o qq_bqf_int.o qq_quat.o qq_visual.o
+SRCS = qq_base.o qq_bqf.o qq_bqf_int.o qq_geometry.o qq_quat.o qq_quat_int.o qq_visual.o
+OBJS = $(SRCS)
 
 TARGET = qquadratic
 SHELL  = /bin/sh
@@ -25,11 +27,14 @@ ALL = $(DYN)
 
 all: $(DYN)
 
+#Rule to build the library
 $(DYN): $(OBJS)
 	$(MODLD) -o $@ $(MODLDFLAGS) $(EXTRACFLAGS) $(OBJS) $(EXTRAMODLDFLAGS)
-	cp $@ ..
+	mv $@ ..
 
+#Rule to make the object files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXTRACFLAGS) $(CPPFLAGS) $(DLCFLAGS) $<
+
 clean:
 	-$(RM) *.o $(ALL)
