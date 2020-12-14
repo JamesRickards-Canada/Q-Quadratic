@@ -51,8 +51,6 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 		addhelp(disclist, "Inputs d1, d2, {fund=0}, {cop=0}: d1 and d2 integers with d1<=d2, fund=0,1, cop integer.\n Outputs the set of proper discriminants between d1 and d2, inclusive. If fund=1, only outputs fundamental discriminants. If cop!=0, only outputs discriminants coprime to cop.");
 		install("discprimeindex_tc","G","discprimeindex","./libqquadratic.so");
 		addhelp(discprimeindex, "Inputs: D, a proper discriminant.\n Outputs all prime divisors p of D for which D/p^2 is a proper discriminant.");
-		install("fdisc_tc","G","fdisc","./libqquadratic.so");
-		addhelp(fdisc, "Inputs: D, a proper discriminant.\n Outputs the fundamental discriminant associated to D, and 0 if D is not a proper discriminant.");
 		install("isdisc","iG","isdisc","./libqquadratic.so");
 		addhelp(isdisc, "Inputs: D a real number.\n Outputs 1 if D is a proper discriminant, and 0 otherwise.");
 		install("pell_tc","G","pell","./libqquadratic.so");
@@ -128,7 +126,7 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 
 	\\GENERAL HELP
 		addhelp(bqf, "This package deals with binary quadratic forms with integer coefficients. A homogeneous binary quadratic form Ax^2+Bxy+Cy^2 is stored as [A,B,C]. A proper discriminant is an integer that is equivalent to 0 or 1 modulo 4 and is not a square. \n Subtopics:\n Discriminants (disc)\n Basic operations (bqfbasic)\n Indefinite forms (ibqf)\n Class group and composition (bqfclass)\n Representation of numbers (bqfsolve)");
-		addhelp(disc,"disclist, discprimeindex, fdisc, isdisc, pell, posreg, quadroot.");
+		addhelp(disc,"disclist, discprimeindex, isdisc, pell, posreg, quadroot.");
 		addhelp(bqfbasic,"bqf_automorph, bqf_disc, bqf_isequiv, bqf_isreduced, bqf_random, bqf_random_D, bqf_red, bqf_roots, bqf_trans, bqf_trans_coprime, ideal_tobqf.");
 		addhelp(ibqf,"ibqf_isrecip, ibqf_leftnbr, ibqf_redorbit, ibqf_rightnbr, ibqf_river, ibqf_riverforms, ibqf_symmetricarc, mat_toibqf.");
 		addhelp(bqfclass,"bqf_comp, bqf_ncgp, bqf_ncgp_lexic, bqf_pow, bqf_square.");

@@ -84,7 +84,7 @@ GEN disclist(GEN D1, GEN D2, int fund, GEN cop){
       GEN fD=gen_0;
       for(D=icopy(D1); cmpii(D, D2) <= 0; D = addis(D, 1)){
 		if(isdisc(D)==0){cgiv(D);continue;}
-        fD=fdisc(D);
+        fD=coredisc(D);
         if(equalii(fD, D)){
           cgiv(fD);
           glist_putstart(&S,D);
@@ -105,7 +105,7 @@ GEN disclist(GEN D1, GEN D2, int fund, GEN cop){
         if(equali1(gc)){
             cgiv(gc);
 			if(isdisc(D)==0){cgiv(D);continue;}
-            fD=fdisc(D);
+            fD=coredisc(D);
             if(equalii(fD, D)){
               cgiv(fD);
               glist_putstart(&S,D);
@@ -165,28 +165,6 @@ GEN discprimeindex(GEN D, GEN facs){
 GEN discprimeindex_tc(GEN D){
   if(!isdisc(D)) pari_err_TYPE("discprimeindex, not a discriminant",D);
   return discprimeindex(D,gen_0);//No garbage
-}
-
-//Returns the fundamental discriminant associated to D (does NOT check if D is a discriminant
-GEN fdisc(GEN D){
-  pari_sp top = avma;
-  long dsign=signe(D);//Sign of D
-  GEN divs=divisors(D);//+ signed divisors
-  long j=lg(divs);
-  GEN term;
-  for(long i=1;i<lg(divs);++i){
-    --j;//i+j=length(divs)+1=lg(divs)
-    term=mulis(gel(divs,i),dsign);
-    if(smodis(term,4)<2 && Z_issquare(gel(divs,j))) return gerepileupto(top,term);
-    cgiv(term);
-  }
-  return gen_0;
-}
-
-//fdisc with typecheck
-GEN fdisc_tc(GEN D){
-  if(!isdisc(D)){pari_warn(warner,"Not a discriminant!");return gen_0;}
-  return fdisc(D);
 }
 
 //Returns 1 if discriminant and 0 if not.
@@ -1863,7 +1841,7 @@ GEN bqf_idelt(GEN D){
 //This computes the narrow class group
 GEN bqf_ncgp(GEN D, long prec){
   pari_sp top = avma;
-  GEN fd=fdisc(D);
+  GEN fd=coredisc(D);
   if(equalii(fd,D)){
     GEN field = Buchall(gsub(gsqr(pol_x(0)), D), 0, prec);//The field Q(sqrt(D))
 	GEN gpclgp = bnfnarrow(field);//The narrow class group of the maximal order

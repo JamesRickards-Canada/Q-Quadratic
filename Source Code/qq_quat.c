@@ -1293,7 +1293,7 @@ GEN qa_embeddablediscs_tc(GEN Q, GEN order, GEN d1, GEN d2, int fund, GEN cop){
 //Returns the data associated to the number of optimal embeddigns of O_D into order. The format is: [m, n, v1, v2, v3]: m is the total number of opt embs, n=h^+(D) is the number of a fixed orientation (NOTE: we just copy what is given in narclno, so if this number is wrong, m and n will be wrong. However, this can be useful if you just want to know if it's non-zero or not, so passing in 1 is OK for those purposes). v1=[x] with x being the number of embeddings at oo (1 if D>0 and 2 if D<0). v2=[x_1,...,x_r] with Q[1]=[p_1,...,p_r] and x_i=number of local embeddings at p_i for i<=r (1 if p_i divides D and 2 else). v3=[y_1,...,y_s]. where s distinct primes q_1,...,q_s divide the level of the order and y_i is the number of local embedding classes. This is 2 as long as q_i does not divide D.
 GEN qa_numemb(GEN Q, GEN order, GEN D, GEN narclno){
   pari_sp top=avma;
-  GEN dfund=fdisc(D), dratio=diviiexact(D, dfund), m=narclno;//Ratio of D to D_fund
+  GEN dfund=coredisc(D), dratio=diviiexact(D, dfund), m=narclno;//Ratio of D to D_fund
   GEN qapram=qa_getpram(Q), ordpram=qa_getordlevelpfac(order), p;
   long lrams, llevelrams, kron;
   GEN rams=cgetg_copy(qapram, &lrams);//Local orientations at ramifying primes

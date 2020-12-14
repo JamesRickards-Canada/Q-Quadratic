@@ -83,8 +83,6 @@ GEN mat_uptriag_rowred_tc(GEN M);
 GEN disclist(GEN D1, GEN D2, int fund, GEN cop);
 GEN discprimeindex(GEN D, GEN facs);
 GEN discprimeindex_tc(GEN D);
-GEN fdisc(GEN D);
-GEN fdisc_tc(GEN D);
 int isdisc(GEN D);
 GEN pell(GEN D);
 GEN pell_tc(GEN D);
