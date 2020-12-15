@@ -568,7 +568,7 @@ GEN qa_eichlerorder(GEN Q, GEN l, GEN maxord){
   GEN x=pol_x(var);//The variable x
   GEN b1=gel(maxord, 1), b2=gel(maxord, 2), b3=gel(maxord, 3), b4=gel(maxord, 4);//Basis elements
   GEN base=gmul(x, b1), lfac=Z_factor(l), maxorddisc=qa_getpramprod(Q);
-  GEN c4=gen_0, elt4, elt3, elt2, elt, nform, A, B, C, D, roots, xsol, conord, intord, newlevel, extralevel, r;
+  GEN c4=gen_0, elt4, elt3, elt2, elt, nform, A, B, C, Dneg, roots, xsol, conord, intord, newlevel, extralevel, r;
   int found=0;
   for(;;){
 	c4=addis(c4, 1);
@@ -583,12 +583,12 @@ GEN qa_eichlerorder(GEN Q, GEN l, GEN maxord){
 		A=polcoef_i(nform, 2, var);
 		B=polcoef_i(nform, 1, var);
 		C=polcoef_i(nform, 0, var);
-		D=gsub(gsqr(B), gmulgs(gmul(A, C), 4));//B^2-4AC
-		roots=sqmod(D, l, lfac);
-		if(gequal0(roots)){avma=mid;continue;}//Nope
+		Dneg=gsub(gmulgs(gmul(A, C), 4), gsqr(B));//4AC-B^2
+		roots=Zn_quad_roots(lfac, gen_0, Dneg);
+		if(roots==NULL){avma=mid;continue;}//Nope
 		//We have an element!
-		for(long i=1;i<lg(gel(roots, 1));i++){
-		  xsol=Fp_red(gdiv(gsub(gel(gel(roots, 1), i), B), gmulgs(A, 2)), l);//A solution for x
+		for(long i=1;i<lg(gel(roots, 2));i++){
+		  xsol=Fp_red(gdiv(gsub(gel(gel(roots, 2), i), B), gmulgs(A, 2)), l);//A solution for x
 		  elt=gadd(elt2, gmul(b1, xsol));
 		  pari_CATCH(e_INV){//When Q is unramified everywhere, elt may have norm 0
             elt=gadd(elt, gmul(b1, l));//Add l until we get an element with non-zero norm.
@@ -1310,7 +1310,7 @@ GEN qa_numemb(GEN Q, GEN order, GEN D, GEN narclno){
 	    gel(rams, i)=gen_1;break;
 	}
   }//On to the level ramifications
-  GEN levelrams=cgetg_copy(ordpram, &llevelrams), Dover4=gdivgs(D, 4), infor;
+  GEN levelrams=cgetg_copy(ordpram, &llevelrams), mDover4=gdivgs(D, -4), toroot, infor;
   for(long i=1;i<llevelrams;i++){//Need kronecker(D, p)!=-1. The exact count is a little more complicated: if p does not divide D it is 2, otherwise it is the sum of solutions to x^2==D/4 modulo p^e PLUS the number of orbits modulo p^e of solutions modulo p^{e+1} (where p^e||level). See Voight 30.6.12.
     p=gel(gel(ordpram, i), 1);//The prime
 	kron=kronecker(D, p);
@@ -1319,18 +1319,21 @@ GEN qa_numemb(GEN Q, GEN order, GEN D, GEN narclno){
 	GEN e=gel(gel(ordpram, i), 2);//The exponent
 	GEN p2e=powii(p, e);
 	GEN fact= gtomat(gel(ordpram, i));
-	GEN roots1=sqmod(Dover4, p2e, fact);//Solutions modulo p^e
-	if(gequal0(roots1)){avma=top;return zerovec(5);}//Can't do it
+	
+	if(typ(mDover4)==t_INT) toroot=mDover4;//already integral
+    else toroot=gneg(D);//We have mDover4=odd integer/4, so translating back to the odd integer is equivalent.
+	GEN roots1=Zn_quad_roots(fact, gen_0, toroot);//Solutions mod p^e
+	if(roots1==NULL){avma=top;return zerovec(5);}//Can't do it
 	gcoeff(fact, 1, 2)=addis(gcoeff(fact, 1, 2), 1);
-	GEN roots2=sqmod(Dover4, mulii(p2e, p), fact);//Solutions modulo p^{e+1}
-	GEN nors=mulii(stoi(lg(gel(roots1, 1))-1), diviiexact(p2e, gel(roots1, 2)));//The number of solutions modulo p^e
-	if(!gequal0(roots2)){//More to do!
-	  if(cmpii(gel(roots2, 2), p2e)==1){
-		GEN v=FpV_red(gel(roots2, 1), p2e);//Reduction modulo p^e
+	GEN roots2=Zn_quad_roots(fact, gen_0, toroot);//Solutions modulo p^{e+1}
+	GEN nors=mulii(stoi(lg(gel(roots1, 2))-1), diviiexact(p2e, gel(roots1, 1)));//The number of solutions modulo p^e
+	if(roots2!=NULL){//More to do!
+	  if(cmpii(gel(roots2, 1), p2e)==1){
+		GEN v=FpV_red(gel(roots2, 2), p2e);//Reduction modulo p^e
 		v=ZV_sort_uniq(v);//Removing equal elements
 		nors=addis(nors, lg(v)-1);//Adding in
 	  }
-	  else nors=addii(nors, mulsi(lg(gel(roots2, 1))-1, diviiexact(p2e, gel(roots2, 2))));//Solutions are already distinct modulo p^e, so need to just multiply to boost up.
+	  else nors=addii(nors, mulsi(lg(gel(roots2, 2))-1, diviiexact(p2e, gel(roots2, 1))));//Solutions are already distinct modulo p^e, so need to just multiply to boost up.
 	}
 	gel(levelrams, i)=nors;
 	m=mulii(m, nors);

@@ -1,3 +1,0 @@
-7
-qquadratic
-qq_base qq_bqf qq_bqf_int qq_visual qq_quat qq_quat_int qq_geometry

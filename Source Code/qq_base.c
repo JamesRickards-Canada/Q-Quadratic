@@ -16,7 +16,6 @@
 #endif
 
 //STATIC METHOD DECLARATIONS
-static GEN sqmod_ppower(GEN x, GEN p, long n, GEN p2n, int iscoprime);
 static int opp_gcmp(void *data, GEN x, GEN y);
 static GEN quadraticinteger(GEN A, GEN B, GEN C);
 
@@ -64,7 +63,7 @@ GEN FpM_eigenvecs(GEN M, GEN p){
   GEN rts=FpX_roots(pol, p);
   long nrts=lg(rts);
   if(nrts==1){avma=top;return cgetg(1, t_VEC);}//No roots
-  GEN shiftM=cgetg(nrts, t_VEC), id=matid(4);
+  GEN shiftM=cgetg(nrts, t_VEC), id=matid(lg(M)-1);
   for(long i=1;i<nrts;i++) gel(shiftM, i)=FpM_sub(M, FpM_Fp_mul(id, gel(rts, i), p), p);//Stores M-eval*Id
   GEN ret=cgetg(nrts, t_VEC);
   for(long i=1;i<nrts;i++){
@@ -157,138 +156,6 @@ GEN mat3_complete_tc(GEN A, GEN B, GEN C){
   if(!equali1(g1)) pari_err_TYPE("GCD is not equal to 1", mkvec3(A, B, C));
   avma=top;
   return mat3_complete(A, B, C);
-}
-
-
-
-//SOLVING EQUATIONS MOD N
-
-
-//I should update this so that we use something like forvec or w/e
-//Solves y^2==x mod n. n must be positive integer, x is rational with gcd(denominator(x),n)=1, fact is the factorization of x (and is optional)
-GEN sqmod(GEN x, GEN n, GEN fact){
-  pari_sp top = avma;
-  if(equali1(n)){//n=1
-	GEN rvec=cgetg(3,t_VEC);//The return vector
-	gel(rvec,1)=mkvec(gen_0);//First entry is [0]
-	gel(rvec,2)=gen_1;//Second entry is [1]
-    return(gerepileupto(top,rvec));
-  }
-  if(gequal0(fact)) fact = Z_factor(n);//Factorization matrix, which can be passed in. It is non-trivial as n>1 necessarily now.
-  if(typ(x)==t_INT) x=Fp_red(x, n);//Reducing x.
-  else x=Fp_div(gel(x,1), gel(x,2), n);//x is t_FRAC, so gel(x,1)=numerator and gel(x,2)=denominator
-  long nprimes=lg(gel(fact,1))-1, nsols=1, lx;
-  GEN residues=cgetg(nprimes+1,t_VEC);
-  GEN moduli=cgetg_copy(residues, &lx), temp;
-  //GEN viter=cgetg_copy(residues, &lx);
-  for(long i=1;i<=nprimes;i++){
-    temp=sqmod_ppower(x,gcoeff(fact,i,1),itos(gcoeff(fact,i,2)),powii(gcoeff(fact,i,1),gcoeff(fact,i,2)),0);
-	if(typ(temp)==t_INT){avma = top;return gen_0;}//Cannot do it
-	gel(residues,i)=gel(temp,1);
-	gel(moduli,i)=gel(temp,2);
-	if(lg(gel(temp,1))==3){
-	  nsols=2*nsols;//Double sols if there are two solutions, else nothing required to do.
-	  //gel(viter,i)=mkvec2(gen_1,gen_2);
-	}
-	//else gel(viter,i)=mkvec2(gen_1,gen_1);
-  }//At this point, we have all the congruences solved.
-  GEN allres=cgetg(nsols+1,t_VEC);//The residues
-  gel(allres,1)=gel(gel(residues,1),1);//First one
-  GEN mastermod=gel(moduli,1), oldmastermod=mastermod;
-  long curmaxpos;
-  if(lg(gel(residues,1))==3){
-    gel(allres,2)=gel(gel(residues,1),2);
-	curmaxpos=2;
-  }
-  else curmaxpos=1;
-  for(long i=2;i<=nprimes;++i){//Add the new congruences
-    mastermod=mulii(mastermod,gel(moduli,i));
-	if(lg(gel(residues,i))==3){//Double
-	  for(long j=1;j<=curmaxpos;j++){
-		  gel(allres,curmaxpos+j)=Z_chinese_coprime(gel(allres,j), gel(gel(residues,i),1), oldmastermod, gel(moduli,i), mastermod);
-		  gel(allres,j)=Z_chinese_coprime(gel(allres,j), gel(gel(residues,i),2), oldmastermod, gel(moduli,i), mastermod);
-	  }
-	  curmaxpos=curmaxpos*2;
-	}
-	else{
-	  for(long j=1;j<=curmaxpos;++j) gel(allres,j)=Z_chinese_coprime(gel(allres,j), gel(gel(residues,i),1), oldmastermod, gel(moduli,i), mastermod);
-	}
-	oldmastermod=mastermod;
-  }
-  GEN rvec=cgetg(3,t_VEC);
-  gel(rvec,1)=ZV_sort(allres);
-  gel(rvec,2)=icopy(mastermod);
-  return gerepileupto(top,rvec);
-}
-
-//sqmod, but we check the inputs.
-GEN sqmod_tc(GEN x, GEN n){
-  pari_sp top = avma;
-  n=absi(n);
-  if(typ(x)!=t_INT && typ(x)!=t_FRAC) pari_err_TYPE("sqmod. x should be rational",x);
-  if(typ(n)!=t_INT) pari_err_TYPE("sqmod. n should be integral",n);
-  return gerepileupto(top,sqmod(x,n,gen_0));
-}
-
-//Solves y^2==x mod p^n=p2n, returns 0 if no solutions and [[residues], modulus] if there are solutions. The modulus will be p^n if p is odd and x is coprime to p; otherwise it may be a smaller power of p.
-static GEN sqmod_ppower(GEN x, GEN p, long n, GEN p2n, int iscoprime){
-  pari_sp top = avma;
-  x=Fp_red(x, p2n);
-  if(iscoprime == 0){//Dealing with gcd(x,p)>1 first.
-    if(gequal0(x)){
-	  GEN tosqrt;
-	  if(n%2==0) tosqrt=p2n;
-	  else tosqrt=mulii(p,p2n);//The return modulus is sqrt(tosqrt)
-      GEN rvec=cgetg(3,t_VEC);//The return vector
-	  gel(rvec,1)=mkvec(gen_0);
-	  gel(rvec,2)=sqrti(tosqrt);
-	  return gerepileupto(top,rvec);
-    }
-    GEN xnew;
-    long v=Z_pvalrem(x, p,&xnew);//x=p^v*xnew, and gcd(xnew,p)=1. We must have v<n-1, else x==0(p^n) which has been treated already.
-    if(v%2==1){avma = top;return gen_0;}//Odd power, cannot do it.
-    if(v>0){//If v==0, we can pass to the second half.
-	  GEN ptov=divii(x,xnew);//Represents p^v
-	  GEN copvec=sqmod_ppower(xnew,p,n-v,divii(p2n,ptov),1);//y^2==p^v*xnew mod p^n <==> (y/p^(v/2))^2==xnew mod p^(n-v).
-	  if(typ(copvec)==t_INT){avma = top;return gen_0;}//No solution here.
-	  //Else, must scale everything by p^(v/2)
-	  GEN ptovo2=sqrti(ptov);//p^(v/2);
-	  long lx;
-	  GEN rvec=cgetg_copy(copvec,&lx);
-	  gel(rvec,2)=mulii(gel(copvec,2),ptovo2);//New modulus
-	  gel(rvec,1)=cgetg_copy(gel(copvec,1),&lx);
-	  for(long i=1;i<lx;i++) gel(gel(rvec,1),i)=mulii(gel(gel(copvec,1),i),ptovo2);
-	  return gerepileupto(top, rvec);
-    }
-  }//Now we have y^2==x mod p^n and x is coprime to p
-  GEN root=Zp_sqrt(x,p,n);//Built in method!
-  if(root==NULL){avma = top;return gen_0;}//No solution
-  //The solutions are now y==+/-root mod p^n, except for p=2 where there are some further considerations.
-  GEN rvec;
-  if(equalis(p,2)){//Case p=2
-    if(n<=3){//Since there IS a solution, these must all boil down to y==1(2).
-	  rvec=cgetg(3,t_VEC);
-	  gel(rvec,1)=mkvec(gen_1);
-	  gel(rvec,2)=gen_2;
-	}
-	else{//y==+/-root mod 2^(n-1)
-	  rvec=cgetg(3,t_VEC);
-	  gel(rvec,2)=shifti(p2n,-1);//2^(n-1)
-	  gel(rvec,1)=cgetg(3,t_VEC);
-	  gel(gel(rvec,1),1)=Fp_red(root,gel(rvec,2));
-	  togglesign_safe(&root);
-	  gel(gel(rvec,1),2)=Fp_red(root,gel(rvec,2));
-	}
-  }
-  else{//p odd
-    rvec=cgetg(3,t_VEC);
-	gel(rvec,2)=icopy(p2n);
-	gel(rvec,1)=cgetg(3,t_VEC);
-	gel(gel(rvec,1),1)=Fp_red(root,p2n);
-	togglesign_safe(&root);
-	gel(gel(rvec,1),2)=Fp_red(root,p2n);
-  }
-  return gerepileupto(top, rvec);
 }
 
 

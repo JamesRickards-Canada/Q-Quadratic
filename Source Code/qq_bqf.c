@@ -364,7 +364,7 @@ GEN bqf_random(GEN maxc, int type, int primitive){
 //Generates a random bqf of discriminant D with |B|<=2maxc and primitive. This is not designed for efficiency
 GEN bqf_random_D(GEN maxc, GEN D){
   pari_sp top=avma;
-  setrand(getwalltime());
+  //setrand(getwalltime());
   if(typ(maxc)!=t_INT) return gen_0;
   if(signe(maxc)!=1) return gen_0;//Just making sure maxc is a positive integer.
   if(!isdisc(D)) return gen_0;
@@ -389,11 +389,7 @@ GEN bqf_random_D(GEN maxc, GEN D){
   else if(signe(D)==1){
 	if(signe(randomi(gen_2))==0){A=negi(A);C=negi(C);}
   }
-  GEN q=cgetg(4,t_VEC);
-  gel(q,1)=A;
-  gel(q,2)=B;
-  gel(q,3)=C;
-  return gerepilecopy(top,q);
+  return gerepilecopy(top, mkvec3(A, B, C));
 }
 
 //Reduce the bqf q of discriminant D with sign(D)=Dsign, rootD=sqrt(D) (can pass as NULL if D<0 as it is not needed), tmat=1 if we return the transition matrix and 0 else.
@@ -2190,7 +2186,7 @@ GEN bqf_reps(GEN q, GEN n, int proper, int half, long prec){
   pari_sp top=avma;
   if(isexactzero(q)) return bqf_reps_all(n);//q=0
   n=icopy(n);//Copy n
-  q=bqf_reps_makeprimitive(q,&n);//Updating q and n.
+  q=bqf_reps_makeprimitive(q,&n);//Updating q and n; this also makes a copy of q so as to not affect it
   if(q==NULL){avma=top; return gen_0;}//No solution; gcd(q) did not divide n.
   GEN D=bqf_disc(q);
   if(signe(D)==-1){//Negative disc
@@ -2267,19 +2263,19 @@ GEN dbqf_reps(GEN qred, GEN D, GEN n, int proper, int half){
 
 //Assume q is primitive, updates sols and nsols with the solutions. Will set terminate to 0 if the residue test failed. nsols should be passed in as pointing to 0
 static void dbqf_reps_proper(GEN qred, GEN D, GEN n, glist **sols, long *nsols, GEN f, int *terminate){
-  GEN fourn=shifti(n,2);//=4n
-  GEN resclass=sqmod(D,fourn,gen_0);//square roots of D modulo 4n
-  if(isexactzero(resclass)){*terminate=1;return;}//No solution.
+  GEN fourn=shifti(n, 2);//=4n
+  GEN resclass=Zn_quad_roots(fourn, gen_0, gneg(D));//square roots of D modulo 4n
+  if(resclass==NULL){*terminate=1;return;}//No solution.
   //We have residue classes, so SOME form of discriminant D represents n. We now have to check if such forms can be q.
-  GEN modu=gel(resclass,2);//The modulus
-  //q properly represents n <=> q is similar to [n,b,c] for 0<=b<2|n|. For this to happen, b^2-4nc=D -> D==b^2 mod 4n, hence the residue condition. gel(resclass,2)=modulus necessarily divides 2n.
+  GEN modu=gel(resclass, 1);//The modulus
+  //q properly represents n <=> q is similar to [n,b,c] for 0<=b<2|n|. For this to happen, b^2-4nc=D -> D==b^2 mod 4n, hence the residue condition. gel(resclass, 1)=modulus necessarily divides 2n.
   GEN B, fred, transmat;//fred will be the reduction of f, transmat circ f=[n,b,c]
   gel(f,1)=n;
   long kmax=itos(diviiexact(shifti(absi(n),1),modu))-1;//2|n|/modu-1
-  for(long j=1;j<lg(gel(resclass,1));++j){//Trying each residue
-    B=gel(gel(resclass,1),j);//Initially B=residue
-    gel(f,2)=B;
-    gel(f,3)=diviiexact(subii(sqri(B),D),fourn);//(B^2-D)/(4n)
+  for(long j=1;j<lg(gel(resclass, 2));++j){//Trying each residue
+    B=gel(gel(resclass, 2),j);//Initially B=residue
+    gel(f, 2)=B;
+    gel(f, 3)=diviiexact(subii(sqri(B), D),fourn);//(B^2-D)/(4n)
     fred=dbqf_red_tmat(f);
     if(ZV_equal(gel(qred,1),gel(fred,1))){//Solution!
       transmat=ZM_mul(gel(qred,2),ZM_inv(gel(fred,2),NULL));//transmat circ f=[n,b,c]
@@ -2288,7 +2284,7 @@ static void dbqf_reps_proper(GEN qred, GEN D, GEN n, glist **sols, long *nsols, 
 	else cgiv(fred);//May as well discard
     for(long k=1;k<=kmax;++k){//Go through the other possibilities
 	  gel(f,3)=addii(gel(f,3),diviiexact(mulii(modu,addii(modu,shifti(B,1))),fourn));//f[3]=f[3]+modu(modu+2B)/(4n)
-	  B=addii(B,modu);//So B=k*modu+resclass[1][j] in the end
+	  B=addii(B,modu);//So B=k*modu+resclass[2][j] in the end
 	  gel(f,2)=B;
 	  fred=dbqf_red_tmat(f);
       if(ZV_equal(gel(qred,1),gel(fred,1))){//Solution!
@@ -2373,22 +2369,22 @@ GEN ibqf_reps(GEN qorb, GEN qautom, GEN D, GEN rootD, GEN n, int proper, int hal
 
 //Assume q is primitive, updates sols and nsols with the solutions. Will set terminate to 0 if the residue test failed.
 static void ibqf_reps_proper(GEN qorb, GEN D, GEN rootD, GEN n, glist **sols, long *nsols, GEN f, int *terminate){
-  GEN fourn=shifti(n,2);//=4n
-  GEN resclass=sqmod(D,fourn,gen_0);//square roots of D modulo 4n
-  if(isexactzero(resclass)){*terminate=1;return;}//No solution.
+  GEN fourn=shifti(n, 2);//=4n
+  GEN resclass=Zn_quad_roots(fourn, gen_0, gneg(D));//square roots of D modulo 4n
+  if(resclass==NULL){*terminate=1;return;}//No solution.
   //We have residue classes, so SOME form of discriminant D represents n. We now have to check if such forms can be q.
-  GEN modu=gel(resclass,2);//The modulus
-  //q properly represents n <=> q is similar to [n,b,c] for 0<=b<2|n|. For this to happen, b^2-4nc=D -> D==b^2 mod 4n, hence the residue condition. gel(resclass,2)=modulus necessarily divides 2n.
+  GEN modu=gel(resclass, 1);//The modulus
+  //q properly represents n <=> q is similar to [n,b,c] for 0<=b<2|n|. For this to happen, b^2-4nc=D -> D==b^2 mod 4n, hence the residue condition. gel(resclass, 1)=modulus necessarily divides 2n.
   GEN B, fred, transmat;//fred will be the reduction of f, transmat circ f=[n,b,c]
   gel(f,1)=n;
   long kmax=itos(diviiexact(shifti(absi(n),1),modu))-1;//2|n|/modu-1
   long ind;
-  for(long j=1;j<lg(gel(resclass,1));++j){//Trying each residue
-    B=gel(gel(resclass,1),j);//Initially B=residue
-    gel(f,2)=B;
-    gel(f,3)=diviiexact(subii(sqri(B),D),fourn);//(B^2-D)/(4n)
-    fred=ibqf_red_pos_tmat(f,rootD);
-	ind=gen_search(qorb,fred,0,NULL,&bqf_compare_tmat);
+  for(long j=1;j<lg(gel(resclass, 2));++j){//Trying each residue
+    B=gel(gel(resclass, 2), j);//Initially B=residue
+    gel(f, 2)=B;
+    gel(f, 3)=diviiexact(subii(sqri(B), D),fourn);//(B^2-D)/(4n)
+    fred=ibqf_red_pos_tmat(f, rootD);
+	ind=gen_search(qorb, fred, 0, NULL, &bqf_compare_tmat);
     if(ind>0){//Solution!
       transmat=ZM_mul(gel(gel(qorb,ind),2),ZM_inv(gel(fred,2),NULL));//transmat circ f=[n,b,c]
 	  bqf_reps_updatesolutions(sols, nsols, &gcoeff(transmat,1,1), &gcoeff(transmat,2,1));//Update!
@@ -2396,7 +2392,7 @@ static void ibqf_reps_proper(GEN qorb, GEN D, GEN rootD, GEN n, glist **sols, lo
 	else cgiv(fred);//May as well discard
     for(long k=1;k<=kmax;++k){//Go through the other possibilities
 	  gel(f,3)=addii(gel(f,3),diviiexact(mulii(modu,addii(modu,shifti(B,1))),fourn));//f[3]=f[3]+modu(modu+2B)/(4n)
-	  B=addii(B,modu);//So B=k*modu+resclass[1][j] in the end
+	  B=addii(B,modu);//So B=k*modu+resclass[2][j] in the end
 	  gel(f,2)=B;
 	  fred=ibqf_red_pos_tmat(f,rootD);
 	  ind=gen_search(qorb,fred,0,NULL,&bqf_compare_tmat);
@@ -2604,7 +2600,7 @@ static GEN bqf_reps_creatervec_proper(glist *sols, long nsols, int half){
 //Returns q/gcd(q), and sets n to n/gcd(q). If gcd(q) does not divide n, returns NULL. If gcd(q)=1 does not clutter stack (gcd=gen_1), but otherwise this does clutter the stack
 static GEN bqf_reps_makeprimitive(GEN q, GEN *n){
   GEN qgcd=ZV_content(q);
-  if(equali1(qgcd)) return q;
+  if(equali1(qgcd)) return gcopy(q);
   //Now q not primitive; now qgcd=gcd(q[1],q[2],q[3])
   GEN remainder;
   *n=dvmdii(*n,qgcd,&remainder);//Replace n by n/qgcd

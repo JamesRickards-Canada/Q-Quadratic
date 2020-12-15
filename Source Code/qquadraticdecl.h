@@ -31,10 +31,6 @@ GEN lin_intsolve_tc(GEN A, GEN B, GEN n);
 GEN mat3_complete(GEN A, GEN B, GEN C);
 GEN mat3_complete_tc(GEN A, GEN B, GEN C);
 
-//SOLVING EQUATIONS MOD N
-GEN sqmod(GEN x, GEN n, GEN fact);
-GEN sqmod_tc(GEN x, GEN n);
-
 //INTEGER VECTORS
 GEN ZV_copy(GEN v);
 int ZV_equal(GEN v1, GEN v2);

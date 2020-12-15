@@ -1,5 +1,6 @@
 print("\n\nType '?qq' for help.\n\n");
 addhelp(qq, "For each package P, call ?P to access a basic description and list of methods. Installed packages: \n base \n bqf \n bqf_int \n geometry \n quat \n quat_int \n visual");
+default(help, "gphelp -detex");
 
 \\qq_base
 
@@ -19,10 +20,6 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 		install("rand_elt","G","rand_elt","./libqquadratic.so");
 		addhelp(rand_elt, "Inputs v, a vector.\n Outputs a random component of the vector.");
 
-	\\SOLVING EQUATIONS MOD N
-		install("sqmod_tc","GG","sqmod","./libqquadratic.so");
-		addhelp(sqmod, "Inputs: x,n: rational number x, integer n with gcd(n,denom(x))=1.\n Solves y^2==x mod n, and outputs the solutions. The output format is 0 if no solutions, and [S,m] otherwise, where the solutions are y==S[i] modulo m.");
-
 	\\TIME
 		install("printtime","v","printtime","./libqquadratic.so");
 		addhelp(printtime, "Prints current time");
@@ -39,7 +36,6 @@ addhelp(qq, "For each package P, call ?P to access a basic description and list 
 		addhelp(base,"This package is a collection of miscellaneous methods that may be useful in a variety of settings, and not just for the programs they were originally created for \n Subtopics: \n Infinity (inf) \n Linear algebra (la) \n Random (rand) \n Square roots (root) \n Time (time)");
 		addhelp(inf,"addoo, divoo.");
 		addhelp(la,"lat_smallvectors, lin_intsolve, mat_choleskydecomp, mat_uptriag_rowred, mat3_complete.");
-		addhelp(root,"sqmod.");
 		addhelp(rand,"rand_elt.");
 		addhelp(time,"printtime.");
 
