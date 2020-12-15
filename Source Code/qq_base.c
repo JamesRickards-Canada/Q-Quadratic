@@ -776,32 +776,4 @@ GEN mat_choleskydecomp_tc(GEN A, int rcoefs, long prec){
   return mat_choleskydecomp(A, rcoefs, prec);
 }
 
-//Finds unimodular S so that M'=S*M, with |M'[i,j]|<=1/2*M'[j,j] for j>i. Returns [M', S, S^(-1)].
-GEN mat_uptriag_rowred(GEN M){
-  pari_sp top=avma;
-  long n=lg(M)-1;
-  GEN A=gcopy(M), S=matid(n), Sinv=matid(n), u;//Copy M, S=Sinv=Id
-  for(long i=2;i<=n;i++){
-	for(long j=1;j<i;j++){
-	  u=ground(gdiv(gneg(gcoeff(A, j, i)), gcoeff(A, i, i)));//u=round(-A[j,i]/A[i,i])
-	  for(long k=1;k<=n;k++){
-		gcoeff(A, j, k)=gadd(gcoeff(A, j, k), gmul(u, gcoeff(A, i, k)));//A[j,]=A[j,]+u*A[i,];
-		gcoeff(Sinv, k, i)=gsub(gcoeff(Sinv, k, i), gmul(u, gcoeff(Sinv, k, j)));//Sinv[,i]=Sinv[,i]-u*Sinv[,j];
-		gcoeff(S, j, k)=gadd(gcoeff(S, j, k), gmul(u, gcoeff(S, i, k)));//S[j,]=S[j,]+u*S[i,];
-	  }
-	}
-  }
-  GEN ret=cgetg(4, t_VEC);
-  gel(ret, 1)=gcopy(A);
-  gel(ret, 2)=gcopy(S);
-  gel(ret, 3)=gcopy(Sinv);
-  return gerepileupto(top, ret);
-}
-
-//mat_uptriag_rowred with typechecking
-GEN mat_uptriag_rowred_tc(GEN M){
-  if(typ(M)!=t_MAT) pari_err_TYPE("Please input a nxn upper triangular MATRIX", M);
-  if(lg(M)!=lg(gel(M, 1))) pari_err_TYPE("Please input a nxn  upper triangular matrix", M);
-  return mat_uptriag_rowred(M);
-}
 

@@ -68,8 +68,6 @@ GEN lat_smallvectors_tc(GEN A, GEN C1, GEN C2, int onesign, int isintegral, long
 GEN lat_smallvectors_cholesky(GEN Q, GEN C1, GEN C2, GEN condition, int onesign, long prec);
 GEN mat_choleskydecomp(GEN A, int rcoefs, long prec);
 GEN mat_choleskydecomp_tc(GEN A, int rcoefs, long prec);
-GEN mat_uptriag_rowred(GEN M);
-GEN mat_uptriag_rowred_tc(GEN M);
 
 //qq_bqf.c
 

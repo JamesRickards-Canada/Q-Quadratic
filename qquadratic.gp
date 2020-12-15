@@ -29,13 +29,11 @@ default(help, "gphelp -detex");
 		addhelp(lat_smallvectors,"Inputs A, C1, {C2=0}, {onesign=1}, {isintegral=0}: positive definite symmetric matrix A, nonnegative constants C1 and C2, onesign=0,1, isintegral=0,1.\n Outputs all non-zero x such that C1<x^TAx<=C. If C2=0, instead outputs non-zero x such that x^TAx<=C1. If onesign=1, only output one of x,-x for each solution x. If the norms are always integral, (entries of A are half integers and integers on the diagonal), then pass isintegral as 1 and the values of the output are fixed to being exact integers. It is advised to pass C+0.1 or similar into the method to account for rounding errors with q(x)=C (correct solutions may be discarded otherwise).");
 		install("mat_choleskydecomp_tc","GD1,L,p","mat_choleskydecomp","./libqquadratic.so");
 		addhelp(mat_choleskydecomp,"Input A, {rcoefs=1}: an nxn symmetric matrix A, and rcoefs=0,1.\n If rcoefs=1, outputs B, an n x n matrix, such that the quadratic form x^TAx is expressible as sum(i=1..n)b_ii(x_i+sum(j=i+1..n)b_ijxj)^2. Otherwise, returns the corresponding matrix R, i.e. so that R^TR=A. Note that if A is not positive definite, this will return a complex matrix.");
-		install("mat_uptriag_rowred_tc","G","mat_uptriag_rowred","./libqquadratic.so");
-		addhelp(mat_uptriag_rowred,"Input: A, an upper triangular matrix with real entries and positive diagonal.\n Outputs [A',S,Sinv], where A'=SA, S is unimodular (det 1 and integer matrix), Sinv is S^(-1). A' is chosen so that it is reduced in the sense of |A'[i,j]|<=1/2A'[j,j] for all j>i (biggest entry in a column is the diagonal element).");
 
 	\\GENERAL HELP
 		addhelp(base,"This package is a collection of miscellaneous methods that may be useful in a variety of settings, and not just for the programs they were originally created for \n Subtopics: \n Infinity (inf) \n Linear algebra (la) \n Random (rand) \n Square roots (root) \n Time (time)");
 		addhelp(inf,"addoo, divoo.");
-		addhelp(la,"lat_smallvectors, lin_intsolve, mat_choleskydecomp, mat_uptriag_rowred, mat3_complete.");
+		addhelp(la,"lat_smallvectors, lin_intsolve, mat_choleskydecomp, mat3_complete.");
 		addhelp(rand,"rand_elt.");
 		addhelp(time,"printtime.");
 
