@@ -4,6 +4,7 @@
 #Press c to toggle unit circle
 #Press g to toggle gridlines
 #Press t to toggle the text box with information
+#Press m to trigger the axes and marks
 #Click on fundamental domain edge to highlight it and the paired side
 #Use left/right arrow keys to move between consecutive sides
 #Click on geodesic segment to highlight it and add an arrow
@@ -325,6 +326,7 @@ class operations_manager(object):
 		self.tboxprops = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
 		self.tbox=ax.text(-0.55, 0.95, '', transform=ax.transAxes, fontsize=14, verticalalignment='top', bbox=self.tboxprops)
 		self.showtbox=True
+		self.axeson=True
 		self.update_infobox()
 	
 	def keypress(self, event):
@@ -358,6 +360,13 @@ class operations_manager(object):
 		elif event.key=='t':
 			self.showtbox=not self.showtbox
 			self.update_infobox()
+			self.ax.figure.canvas.draw()
+		elif event.key=='m':
+			if self.axeson:
+				self.ax.set_axis_off()
+			else:
+				self.ax.set_axis_on()
+			self.axeson=not self.axeson
 			self.ax.figure.canvas.draw()
 	
 	def onclick(self, event):
@@ -433,7 +442,7 @@ if __name__=='__main__':
 	
 	#Geodesic arcs
 	geodesics=[]
-	arccolours=['aqua', 'chartreuse', 'fuchsia', 'blue', 'maroon', 'darkblue', 'teal', 'y']
+	arccolours=['red', 'blue', 'aqua', 'fuchsia', 'chartreuse', 'maroon', 'darkblue', 'teal', 'y']
 	counter=-1
 	isfdom=False
 	for c in sys.argv[1:]:
