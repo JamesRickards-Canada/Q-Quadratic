@@ -378,6 +378,7 @@ GEN qa_minpoly(GEN Q, GEN x);
 GEN qa_minpoly_tc(GEN Q, GEN x);
 GEN qa_mul(GEN Q, GEN x, GEN y);
 GEN qa_mul_tc(GEN Q, GEN x, GEN y);
+GEN qa_mulsets(GEN Q, GEN S1, GEN S2);
 GEN qa_mulvec(GEN Q, GEN L);
 GEN qa_mulvec_tc(GEN Q, GEN L);
 GEN qa_mulvecindices(GEN Q, GEN L, GEN indices);
@@ -452,6 +453,16 @@ GEN qa_orinfinite(GEN Q, GEN emb, GEN D, long prec);
 GEN qa_orinfinite_tc(GEN Q, GEN emb, GEN D, long prec);
 GEN qa_sortedembed(GEN Q, GEN order, GEN D, GEN rpell, GEN ncgp, long prec);
 GEN qa_sortedembed_tc(GEN Q, GEN order, GEN D, int rpell, GEN ncgp, long prec);
+
+//ELEMENTS OF NORM N IN AN EICHLER ORDER
+GEN qa_orbitrepsprime(GEN Q, GEN order, GEN p, long prec);
+GEN qa_orbitrepsprimepower(GEN Q, GEN order, GEN p, GEN e, long prec);
+GEN qa_orbitreps(GEN Q, GEN order, GEN n, long prec);
+GEN qa_orbitreps_tc(GEN Q, GEN order, GEN n, long prec);
+GEN qa_orbitrepsrange(GEN Q, GEN order, GEN n, long prec);
+GEN qa_orbitrepsrange_tc(GEN Q, GEN order, GEN n, long prec);
+GEN qa_hecke(GEN Q, GEN order, GEN n, GEN emb, GEN D, long prec);
+GEN qa_hecke_tc(GEN Q, GEN order, GEN n, GEN emb, long prec);
 
 //FUNDAMENTAL DOMAIN METHODS
 GEN qa_fundamentaldomain(GEN Q, GEN order, GEN p, int dispprogress, GEN ANRdata, GEN tol, long prec);
@@ -541,10 +552,14 @@ GEN qa_xposs_tc(GEN Qorpset, GEN D1, GEN D2, GEN xmin, GEN xmax);
 GEN qa_inum_fd_givengeod(GEN Q, GEN order, GEN U, GEN geod1, GEN geod2, GEN pell1, GEN pell2, GEN D1D2, int data, GEN tol, long prec);
 GEN qa_inum_fd_tc(GEN Q, GEN order, GEN U, GEN e1, GEN e2, int data, long prec);
 
+//INTERSECTION SERIES
+GEN qa_inumseries(GEN Q, GEN order, GEN U, GEN e1, GEN e2, GEN D1, GEN D2, GEN N, int type, long prec);
+GEN qa_inumseries_tc(GEN Q, GEN order, GEN U, GEN e1, GEN e2, GEN N, int type, long prec);
+
 //INTERSECTION DATA
 GEN qa_intlevel(GEN Q, GEN order, GEN e1, GEN e2, GEN D1D2, long prec);
 GEN qa_intlevel_tc(GEN Q, GEN order, GEN e1, GEN e2, GEN D1, GEN D2, long prec);
-
+GEN qa_inum_fromdata(GEN data, int type);
 
 //qq_visual.c
 

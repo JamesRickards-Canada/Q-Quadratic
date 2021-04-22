@@ -352,7 +352,15 @@ default(help, "gphelp -detex");
 		addhelp(qa_orinfinite,"Inputs Q, emb, {D=0}: indefinite quaternion algebra Q, embedding emb of discriminant D.\n Returns the orientation of the embedding emb with respect to the standard embedding into M(2, R) (0 if D>0, and +/-1 if D<0).");
 		install("qa_sortedembed_tc","GGGD0,L,D0,G,p","qa_sortedembed","./libqquadratic.so");
 		addhelp(qa_sortedembed,"Inputs Q, order, D, {rpell=0}, {ncgp=0}; indefinite quaternion algebra Q, initialized Eichler order order, discriminant D, rpell=0,1, ncgp=0 or the output of bqf_ncgp_lexic(D).\n Returns the optimal embeddings of O_D into order sorted by embedding and group action. Rows correspond to a fixed orientation, with the first entry being the primes at which the orientation differs from the first line. The subsequent h^+(D) entries are the optimal embeddings, arranged so that lexicorder(D,1)[i] acts on form in position j takes it to the form in position i+j. Conjugating a row of embeddings by an Atkin Lehner involution takes the row to the row with the corresponding orientation.");
-
+	
+	\\ELEMENTS OF NORM N IN AN EICHLER ORDER
+		install("qa_orbitreps_tc","GGGp","qa_orbitreps","./libqquadratic_testing.so");
+		addhelp(qa_orbitreps,"Inputs Q, order, n: indefinite quaternion algebra Q, initialized Eichler order order, positive integer n.\n Returns a set of elements S, all of whom have reduced norm n, and are a complete set of representatives for O_{N=1}/O_{N=n}. If n is not coprime to the level of the order, returns 0.");
+		install("qa_orbitrepsrange_tc","GGGp","qa_orbitrepsrange","./libqquadratic_testing.so");
+		addhelp(qa_orbitrepsrange,"Inputs Q, order, n: indefinite quaternion algebra Q, initialized Eichler order order, positive integer n.\n Returns the vector of length n whose ith element is qa_orbitreps(Q, order, i).");
+		install("qa_hecke_tc","GGGGp","qa_hecke","./libqquadratic_testing.so");
+		addhelp(qa_hecke,"Inputs Q, order, n, emb: indefinite quaternion algebra Q, initialized Eichler order order, positive integer n, optimal embedding emb.\n Returns the action of T_n on emb. The format is a vector of [m, emb'], where emb' has multiplicity m.");
+	
 	\\FUNDAMENTAL DOMAIN METHODS
 		install("qa_fundamentaldomain_tc","GGD0,G,D0,L,D0,G,p","qa_fundamentaldomain","./libqquadratic.so");
 		addhelp(qa_fundamentaldomain,"Inputs Q, order, {p=0}, {dispprogress=0}, {ANRdata=0}: indefinite quaternion algebra Q, Eichler order order, {upper half plane point p (or 0)}, {dispprogress=0, 1}, {ANRdata=0 or length 5 vector}.\n Returns the fundamental domain of order, using Algorithm 4.8 of Voight with (probabilistic) enumeration via Algorithm 11 of Page. If p is passed in as 0, sets it to I/2 (which is never fixed if there is ramification). If dispprogress=1, returns partial results to the screen. The method relies on the constants [A, N, R, 1+nu, epsilon], which can be auto-set if ANRdata=0 or passed in by the user. Passing in a vector with some zero entries will automatically set those entries, and take the user input for the others (e.g. [10, 0, 0, 0, 1] sets A=10, epsilon=1, and auto-sets N, R, 1+nu).");
@@ -416,6 +424,10 @@ default(help, "gphelp -detex");
 		install("qa_inum_fd_tc","GGGGGD1,L,p","qa_inum_fd","./libqquadratic.so");
 		addhelp(qa_inum_fd,"Inputs Q, order, U, e1, e2, {data=1}: indefinite quaternion algebra Q with order order, fundamental domain of order U, embeddings e1 and e2, data=0, 1.\n Returns the intersection number of e1 and e2 based on computing their root geodesics in the fundamental domain. If data=0, only returns the pairs, otherwise returns [[intersections],[data]], where intersections[i] is a pair of optimal embeddings that intersect, and data[i] is the pair [signed level,x] corresponding to the embedding pair.");
 	
+	\\INTERSECTION SERIES
+		install("qa_inumseries_tc","GGGGGGD1,L,p","qa_inumseries","./libqquadratic_testing.so");
+		addhelp(qa_inumseries,"Inputs Q, order, U, e1, e2, N, {type=1}: indefinite quaternion algebra Q, Eichler order order, fundamental domain U, optimal embeddings e1, e2, positive integer N, type=0, 1, prime.\n Returns the intersection series associated to e1, e2 and type, i.e. sum_{n=1}^N Int_{type}(e1, T_n e2)q^n, where type=0 means unsigned, =1 means signed, and >1 means type-weighted, where type should be a prime ramifying in Q or dividing the level of the order order (as the intersection pairing is Hecke-adjoint for those primes).");
+
 	\\INTERSECTION DATA
 		install("qa_intlevel_tc","GGGGD0,G,D0,G,p","qa_intlevel","./libqquadratic.so");
 		addhelp(qa_intlevel,"Inputs Q, order, e1, e2, {D1=0}, {D2=0}: indefinite quaternion algebra Q, initialized Eichler order order, embeddings e1, e2 of discriminants D1, D2 (which do not need to be passed in).\n Returns the pair [signed level,x] corresponding to the embedding pair.");

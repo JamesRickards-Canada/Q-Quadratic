@@ -21,6 +21,7 @@ static GEN qa_ord_init_trace0basis(GEN Q, GEN ord, GEN maxds);
 static GEN qa_conjbasis_orient(GEN Q, GEN ord, GEN v1, GEN v2, GEN e2);
 static int qa_embed_isnewoptimal(GEN Q, GEN ord, GEN ordinv, GEN D, GEN Dmod2, GEN dfacs, GEN emb, GEN gcdf1g1h1, GEN embs, long pos, long prec);
 static int qa_embedor_compare(void *data, GEN pair1, GEN pair2);
+static int qa_orbitrepsprime_checksol(GEN Q, GEN order, GEN T, GEN W, GEN *reps, long *place, GEN sol);
 
 //A quaternion algebra Q is stored as the vector [nf, pset, [a,b,-ab], product of finite primes in pset] where it is an algebra over the field nf, pset is the set of ramified primes, and the algebra can be represented as (a,b/nf), so that i^2=a, j^2=b, k^2=-ab. Over Q, we use nf=0, and by convention will always have gcd(a, b)=1.
 
@@ -147,6 +148,19 @@ GEN qa_mul(GEN Q, GEN x, GEN y){
 GEN qa_mul_tc(GEN Q, GEN x, GEN y){
   qa_check(Q);qa_eltcheck(x);qa_eltcheck(y);
   return qa_mul(Q, x, y);
+}
+
+//Returns the set of elements in S1*S2
+GEN qa_mulsets(GEN Q, GEN S1, GEN S2){
+  long l1=lg(S1)-1, l2=lg(S2)-1, ind=1;
+  GEN prod=cgetg(l1*l2+1, t_VEC);
+  for(long i=1;i<=l1;i++){
+	for(long j=1;j<=l2;j++){
+	  gel(prod, ind)=qa_mul(Q, gel(S1, i), gel(S2, j));
+	  ind++;
+	}
+  }
+  return prod;
 }
 
 //Multiplies the elements of a vector together
@@ -311,7 +325,6 @@ GEN qa_trace_tc(GEN x){qa_eltcheck(x);return qa_trace(x);}
 
 
 //BASIC OPERATIONS ON ORDERS/LATTICES IN QUATERNION ALGEBRAS 
-
 
 
 //Checks if x is in the order specificed by ordinv^(-1).
@@ -944,7 +957,6 @@ GEN qa_ram_fromab_tc(GEN a, GEN b){
 //CONJUGATION OF ELEMENTS IN A GIVEN ORDER
 
 
-
 //Returns the basis for the 2-dimensional Z-module of the set of x for which x*e1=e2*x. Returns 0 if e1, e2 are not conjugate or rational.
 GEN qa_conjbasis(GEN Q, GEN ord, GEN ordinv, GEN e1, GEN e2, int orient){
   pari_sp top=avma;
@@ -1086,7 +1098,6 @@ GEN qa_simulconj_tc(GEN Q, GEN ord, GEN e1, GEN e2, GEN f1, GEN f2, long prec){
 
 
 //EMBEDDING QUADRATIC ORDERS INTO EICHLER ORDERS
-
 
 
 //Given a quaternion algebra Q, order order, and embedding of O_D given by emb=image of (p_D+sqrt(D))/2, this outputs the pair [em', D'] which is the embedding associated to phi and ord. It is the unique optimal embedding of an order O_D' which agrees with em on the fraction field. D can be passed in as 0.
@@ -1517,6 +1528,284 @@ static int qa_embedor_compare(void *data, GEN pair1, GEN pair2){
   else if(l1>l2) return 1;
   return lexcmp(gel(pair1, 2), gel(pair2, 2));
 }
+
+
+
+//ELEMENTS OF NORM N IN AN EICHLER ORDER
+
+
+//Returns representatives for O_{N=p} where p is a prime not dividing the level.
+GEN qa_orbitrepsprime(GEN Q, GEN order, GEN p, long prec){
+  pari_sp top=avma, mid, bot;
+  if(gequal0(modii(qa_getordlevel(order), p))) pari_err_TYPE("p must not divide the level.", p);
+  long nreps;
+  if(gequal0(modii(qa_getpramprod(Q), p))) nreps=1;//One rep when p ramifies
+  else nreps=itos(p)+1;//p+1 reps else
+  GEN reps=cgetg(nreps+1, t_VEC);
+  long place=1;
+  GEN normform=qa_ord_normform(Q, qa_getord(order));//The norm form as a matrix
+  long tvar=fetch_var(), wvar=fetch_var(), xvar=fetch_var(), yvar=fetch_var();//Temporary variables
+  GEN t=pol_x(tvar), w=pol_x(wvar), x=pol_x(xvar), y=pol_x(yvar);//The monomials
+  GEN elt=mkvec4(t, w, x, y);
+  GEN form=gmul(gmul(elt, normform), shallowtrans(elt));//norm(t*ord[1]+...+y*ord[4]).
+  //We loop over t and w, and solve for x, y at each place.
+  GEN bqfinfo=cgetg(7, t_VEC);//[A, B, ..., F], where the BQF for X, Y is AX^2+BXY+CY^2+DX+EY+F
+  gel(bqfinfo, 1)=polcoef_i(form, 2, xvar);
+  GEN xpart=polcoef_i(form, 1, xvar);
+  gel(bqfinfo, 2)=polcoef_i(xpart, 1, yvar);
+  gel(bqfinfo, 3)=polcoef_i(form, 2, yvar);
+  gel(bqfinfo, 4)=polcoef_i(xpart, 0, yvar);
+  GEN xconstpart=polcoef_i(form, 0, xvar);
+  gel(bqfinfo, 5)=polcoef_i(xconstpart, 1, yvar);
+  gel(bqfinfo, 6)=polcoef_i(xconstpart, 0, yvar);
+  GEN D1, E1, F1, D2, E2, F2, sol;
+  int isdone=0;
+  mid=avma;
+  GEN M=gen_0;//M=max coeff of t, w
+  for(;;){
+    if(gc_needed(mid, 1)){
+	  bot=avma;
+	  M=gcopy(M);
+	  GEN newreps=cgetg(nreps+1, t_VEC);
+	  for(long i=1;i<place;i++) gel(newreps, i)=gcopy(gel(reps, i));
+	  reps=newreps;
+	  gerepileallsp(mid, bot, 2, &M, &reps);
+	}
+	//Start with T=M
+	D1=gsubst(gel(bqfinfo, 4), tvar, M);
+	E1=gsubst(gel(bqfinfo, 5), tvar, M);
+	F1=gsubst(gel(bqfinfo, 6), tvar, M);
+	for(GEN N=negi(M);cmpii(N, M)<=0;N=addis(N, 1)){
+	  D2=gsubst(D1, wvar, N);
+	  E2=gsubst(E1, wvar, N);
+	  F2=gsubst(F1, wvar, N);
+	  sol=bqf_bigreps(mkvec5(gel(bqfinfo, 1), gel(bqfinfo, 2), gel(bqfinfo, 3), D2, E2), subii(p, F2), prec);
+	  if(gequal0(sol)) continue;
+	  isdone=qa_orbitrepsprime_checksol(Q, order, M, N, &reps, &place, sol);
+	  if(isdone) break;
+	}
+	if(isdone) break;
+	//Now do W=M
+	D1=gsubst(gel(bqfinfo, 4), wvar, M);
+	E1=gsubst(gel(bqfinfo, 5), wvar, M);
+	F1=gsubst(gel(bqfinfo, 6), wvar, M);
+	for(GEN N=negi(M);cmpii(N, M)<=0;N=addis(N, 1)){
+	  D2=gsubst(D1, tvar, N);
+	  E2=gsubst(E1, tvar, N);
+	  F2=gsubst(F1, tvar, N);
+	  sol=bqf_bigreps(mkvec5(gel(bqfinfo, 1), gel(bqfinfo, 2), gel(bqfinfo, 3), D2, E2), subii(p, F2), prec);
+	  if(gequal0(sol)) continue;
+	  isdone=qa_orbitrepsprime_checksol(Q, order, N, M, &reps, &place, sol);
+	  if(isdone) break;
+	}
+	if(isdone) break;
+	M=addis(M, 1);
+  }
+  long delv;
+  do{delv=delete_var();} while(delv && delv<=tvar);//Delete the variables; first variable was t.
+  return gerepilecopy(top, reps);
+}
+
+//Updates the set of solutions. Returns 1 if done.
+static int qa_orbitrepsprime_checksol(GEN Q, GEN order, GEN T, GEN W, GEN *reps, long *place, GEN sol){
+  GEN ord=qa_getord(order), ordinv=qa_getordinv(order);
+  GEN elt1=gadd(gmul(T, gel(ord, 1)), gmul(W, gel(ord, 2)));//Part of elt
+  GEN elts=cgetg(lg(sol)-1, t_VEC);
+  if(gequal0(gmael(sol, 1, 1))){//Finite
+	for(long i=2;i<lg(sol);i++){
+	  gel(elts, i-1)=gadd(elt1, gadd(gmul(gmael(sol, i, 1), gel(ord, 3)), gmul(gmael(sol, i, 2), gel(ord, 4))));
+	}
+  }
+  else if(equali1(gmael(sol, 1, 1))){//Positive
+	for(long i=2;i<lg(sol);i++){
+	  gel(elts, i-1)=gadd(elt1, gadd(gmul(gadd(gmael(sol, i, 1), gmael3(sol, 1, 3, 1)), gel(ord, 3)), gmul(gadd(gmael(sol, i, 2), gmael3(sol, 1, 3, 2)), gel(ord, 4))));
+	}
+  }
+  else return 0;//Not equipped, but I think this will never occur.
+  
+  GEN eltinv;
+  for(long i=1;i<lg(elts);i++){
+    eltinv=qa_inv(Q, gel(elts, i));
+	int isnew=1;
+	for(long j=1;j<*place;j++){
+	  if(qa_isinorder(Q, ordinv, qa_mul(Q, gel(*reps, j), eltinv))){isnew=0;break;}//Checking if we have a new element or not
+	}
+	if(!isnew) continue;//Not new
+	gel(*reps, *place)=shallowtrans(gel(elts, i));
+	++*place;//++must come before * to properly increment it
+	if(*place==lg(*reps)) return 1;//Done!
+  }
+  return 0;
+}
+
+//Returns representatives for O_{N=p^i} for all i<=e. The first return element is i=0, then i=1, ..., all the way to i=e. p must not divide the level.
+GEN qa_orbitrepsprimepower(GEN Q, GEN order, GEN p, GEN e, long prec){
+  pari_sp top=avma;
+  if(gequal0(e)){//1
+	GEN rvec=cgetg(2, t_VEC);
+	gel(rvec, 1)=cgetg(2, t_VEC);
+	gmael(rvec, 1, 1)=mkvec4s(1, 0, 0, 0);
+	return rvec;
+  }
+  if(equali1(e)){
+	GEN rvec=cgetg(3, t_VEC);
+	gel(rvec, 1)=cgetg(2, t_VEC);
+	gmael(rvec, 1, 1)=mkvec4s(1, 0, 0, 0);
+	gel(rvec, 2)=qa_orbitrepsprime(Q, order, p, prec);
+	return rvec;
+  }
+  GEN ordinv=qa_getordinv(order);
+  GEN prev=qa_orbitrepsprimepower(Q, order, p, subis(e, 1), prec);//Up to e-1
+  long ep1=lg(prev);
+  if(gequal0(modii(qa_getpramprod(Q), p))){//p ramified, just multiply by p
+	GEN rvec=cgetg(ep1+1, t_VEC);
+	for(long i=1;i<ep1;i++) gel(rvec, i)=gcopy(gel(prev, i));
+	gel(rvec, ep1)=cgetg(2, t_VEC);
+	gmael(rvec, ep1, 1)=qa_mul(Q, gmael(rvec, 2, 1), gmael(rvec, ep1-1, 1));
+	return gerepileupto(top, rvec);
+  }
+  //Now T_p^{n+1}=T_p^nT_p-pT_p^{n-1}
+  GEN final=cgetg((lg(gel(prev, ep1-1))-1)*itos(p)+2, t_VEC);//The number of representatives.
+  long ind=lg(gel(prev, ep1-2));//The first unfilled index
+  for(long i=1;i<ind;i++) gel(final, i)=gmul(p, gmael(prev, ep1-2, i));//T_p^{e-2} times p.
+  GEN elt;
+  for(long i=1;i<lg(gel(prev, 2));i++){//element from T_p
+    for(long j=1;j<lg(gel(prev, ep1-1));j++){//Element from T_p^{e-1}
+	  elt=qa_mul(Q, gmael(prev, 2, i), gmael(prev, ep1-1, j));
+	  if(!qa_isinorder(Q, ordinv, gdiv(elt, p))){//Only keep those NOT in the order when you divide by p
+		gel(final, ind)=gcopy(elt);
+		ind++;
+	  }
+    }
+  }
+  GEN rvec=cgetg(ep1+1, t_VEC);
+  for(long i=1;i<ep1;i++) gel(rvec, i)=gel(prev, i);
+  gel(rvec, ep1)=final;
+  return gerepilecopy(top, rvec);
+}
+
+//Returns representatives for O_{N=n} when n is coprime to the level.
+GEN qa_orbitreps(GEN Q, GEN order, GEN n, long prec){
+  pari_sp top=avma;
+  if(equali1(n)){
+	GEN rvec=cgetg(2, t_VEC);
+	gel(rvec, 1)=mkvec4s(1, 0, 0, 0);
+	return rvec;
+  }
+  GEN fact=Z_factor(n);
+  long nfacsp1=lg(gel(fact, 1));//Number of prime factors+1
+  GEN parts=cgetg(nfacsp1, t_VEC);
+  for(long i=1;i<nfacsp1;i++) gel(parts, i)=qa_orbitrepsprimepower(Q, order, gcoeff(fact, i, 1), gcoeff(fact, i, 2), prec);
+  //Now we multiply out.
+  GEN ret=gel(gel(parts, 1), lg(gel(parts, 1))-1);
+  for(long i=2;i<nfacsp1;i++) ret=qa_mulsets(Q, ret, gel(gel(parts, i), lg(gel(parts, i))-1));
+  return gerepileupto(top, ret);
+}
+
+//qa_orbitreps with type checking.
+GEN qa_orbitreps_tc(GEN Q, GEN order, GEN n, long prec){
+  pari_sp top=avma;
+  qa_indefcheck(Q);
+  qa_ordeichlercheck(order);
+  if(typ(n)!=t_INT || signe(n)!=1) pari_err_TYPE("n must be a positive integer coprime to the level", n);
+  GEN g=gcdii(n, qa_getordlevel(order));
+  if(!equali1(g)) pari_err_TYPE("n must be a positive integer coprime to the level", n);
+  avma=top;
+  return qa_orbitreps(Q, order, n, prec);
+}
+
+//Returns represnetatives for O_{N=i} for all i<=n and coprime to the level (returns 0 when not coprime to the level).
+GEN qa_orbitrepsrange(GEN Q, GEN order, GEN n, long prec){
+  pari_sp top=avma;
+  GEN pset=primes0(mkvec2(gen_1, n));
+  long nprimes, np1=itos(n)+1;
+  GEN plocs=cgetg(np1, t_VECSMALL);//plocs[p]=i means pset[i]=p.
+  for(long i=1;i<np1;i++) plocs[i]=0;
+  for(long i=1;i<lg(pset);i++) plocs[itos(gel(pset, i))]=i;
+  GEN logn=glog(n, prec);
+  GEN level=qa_getordlevel(order), ppowers=cgetg_copy(pset, &nprimes),  maxpow;//Stores the representatives
+  for(long i=1;i<nprimes;i++){
+	if(dvdii(level, gel(pset, i))) continue;//p divides level
+	maxpow=gceil(gdiv(logn, glog(gel(pset, i), prec)));//We take the ceiling to account for rounding issues. If we just took the floor, we may have an issue when n is a prime power.
+	if(cmpii(powii(gel(pset, i), maxpow), n)==1) maxpow=subis(maxpow, 1);//Correcting for the rounding issues.
+	gel(ppowers, i)=qa_orbitrepsprimepower(Q, order, gel(pset, i), maxpow, prec);
+  }
+  GEN reps=zerovec(np1-1);//Preparing the representatives
+  gel(reps, 1)=qa_orbitreps(Q, order, gen_1, prec);
+  for(long m=2;m<np1;m++){
+	GEN mint=stoi(m);
+	if(!equali1(gcdii(level, mint))) continue;//Go on
+	GEN fact=Z_factor(mint);
+	long nfacsp1=lg(gel(fact, 1));
+	if(nfacsp1==2){//Prime power
+	  gel(reps, m)=gel(gel(ppowers, plocs[itos(gcoeff(fact, 1, 1))]), itos(gcoeff(fact, 1, 2))+1);//Accessing the prime power
+	}
+	else{//Non-prime power, so we use the previously computed values
+	  GEN p=gcoeff(fact, 1, 1), e=gcoeff(fact, 1, 2), ptoe=powii(p, e);//First prime power
+	  GEN mpart=diviiexact(mint, ptoe);//mpart<m and is coprime to ptoe
+	  gel(reps, m)=qa_mulsets(Q, gel(reps, itos(mpart)), gel(gel(ppowers, plocs[itos(p)]), itos(e)+1));//Multiplying out the sets
+	}
+  }
+  return gerepilecopy(top, reps);
+}
+
+//qa_orbitrepsrange with type checking
+GEN qa_orbitrepsrange_tc(GEN Q, GEN order, GEN n, long prec){
+  qa_indefcheck(Q);
+  qa_ordeichlercheck(order);
+  if(typ(n)!=t_INT || signe(n)!=1) pari_err_TYPE("n must be a positive integer", n);
+  return qa_orbitrepsrange(Q, order, n, prec);
+}
+
+//Returns T_n(emb) as a set of [m, emb'] where emb' has multiplicity m. Can pass in either n or orbitreps(n) for n
+GEN qa_hecke(GEN Q, GEN order, GEN n, GEN emb, GEN D, long prec){
+  pari_sp top=avma;
+  GEN reps;
+  if(typ(n)==t_INT){
+	if(gequal0(n)) return cgetg(1, t_VEC);
+    reps=qa_orbitreps(Q, order, n, prec);
+  }
+  else reps=n;
+  long lgreps=lg(reps);
+  GEN conjembs=vectrunc_init(lgreps), cemb;//Stores the conjugated embeddings
+  GEN mults=vecsmalltrunc_init(lgreps);//The multiplicities
+  for(long i=1;i<lgreps;i++){
+	cemb=qa_associatedemb(Q, order, qa_conjby(Q, emb, gel(reps, i)), D);//[emb', D']=The conjugated embedding and discriminant.
+	int isnew=1;
+	for(long j=1;j<lg(conjembs);j++){//Checking if already there.
+	  if(gequal0(qa_conjnorm(Q, qa_getord(order), qa_getordinv(order), gel(cemb, 1), gel(gel(conjembs, j), 1), gen_1, 0, prec))) continue;//Continue
+	  isnew=0;//Already there
+	  mults[j]++;
+	  break;
+	}
+	if(isnew){//New!
+	  vectrunc_append(conjembs, cemb);
+	  vecsmalltrunc_append(mults, 1);
+	}
+  }
+  long nembs=lg(conjembs);
+  GEN logeD=posreg(D, prec);//log of epsilon_D
+  GEN ret=cgetg(nembs, t_VEC);
+  for(long i=1;i<nembs;i++){//Final return vector, fixing multiplicities
+	gel(ret, i)=mkvec2(gen_0, gel(gel(conjembs, i), 1));
+	gmael(ret, i, 1)=ground(gmulgs(gdiv(logeD, posreg(gel(gel(conjembs, i), 2), prec)), mults[i]));//The multiplicity
+  }
+  return gerepilecopy(top, ret);
+}
+
+//qa_hecke with type checking and initializing D
+GEN qa_hecke_tc(GEN Q, GEN order, GEN n, GEN emb, long prec){
+  pari_sp top=avma;
+  qa_indefcheck(Q);
+  qa_ordeichlercheck(order);
+  if(typ(n)!=t_VEC){
+    if(typ(n)!=t_INT || signe(n)!=1) pari_err_TYPE("n must be a positive integer OR the output of qa_orbitreps", n);
+  }
+  qa_eltcheck(emb);
+  GEN actualemb=qa_associatedemb(Q, order, emb, gen_0);
+  return gerepileupto(top, qa_hecke(Q, order, n, gel(actualemb, 1), gel(actualemb, 2), prec));
+}
+
 
 
 

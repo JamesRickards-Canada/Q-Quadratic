@@ -17,9 +17,8 @@ static GEN qa_inum_roots_ghsearch(GEN Q, GEN ordinv, GEN rta, GEN maxd3d4, GEN D
 static int sides_int_indices(long i1, long i2, long j1, long j2);
 
 
+
 //INTERSECTION NUMBER BASED OFF OF ROOTS BOUND AREA
-
-
 
 
 //Must have ei being the image if (p_Di+sqrt(Di))/2.
@@ -295,7 +294,6 @@ static GEN qa_inum_roots_ghsearch(GEN Q, GEN ordinv, GEN rta, GEN maxd3d4, GEN D
 //INTERSECTIONS BASED ON X-LINKAGE
 
 
-
 //Intersection number based on x-linking. The output is [[pairs],[signed levels]], with pairs corresponding to respective levels."
 GEN qa_inum_x(GEN Q, GEN order, GEN e1, GEN e2, GEN D1, GEN D2, int data, long prec){
   pari_sp top=avma;
@@ -528,7 +526,9 @@ possqalg(D1,D2)={
 }*/
 
 
+
 //INTERSECTION NUMBER BASED ON FUNDAMENTAL DOMAIN
+
 
 //Compute the intersection number given the geodesics
 GEN qa_inum_fd_givengeod(GEN Q, GEN order, GEN U, GEN geod1, GEN geod2, GEN pell1, GEN pell2, GEN D1D2, int data, GEN tol, long prec){
@@ -657,6 +657,42 @@ GEN qa_inum_fd_tc(GEN Q, GEN order, GEN U, GEN e1, GEN e2, int data, long prec){
 }
 
 
+
+//INTERSECTION SERIES
+
+
+//Returns the intersection series associated to e1 and e2. U must be the fundamental domain, we go up to q^N, and type=0 means unsigned, 1=signed, >=2 means q-weighted for q=type.
+GEN qa_inumseries(GEN Q, GEN order, GEN U, GEN e1, GEN e2, GEN D1, GEN D2, GEN N, int type, long prec){
+  pari_sp top=avma;
+  GEN reps=qa_orbitrepsrange(Q, order, N, prec);
+  long Np1=itos(N)+1;
+  GEN rvec=cgetg(Np1, t_VEC);
+  for(long i=1;i<Np1;i++){
+	GEN hforms=qa_hecke(Q, order, gel(reps, i), e2, D2, prec);
+	if(gequal0(hforms)){gel(rvec, i)=gen_0;continue;}//Not coprime to the area
+	GEN inum=gen_0;
+	for(long j=1;j<lg(hforms);j++){
+	  GEN data=qa_inum_fd_tc(Q, order, U, e1, gel(gel(hforms, j), 2), 1, prec);
+	  inum=addii(inum, mulii(gel(gel(hforms, j), 1), qa_inum_fromdata(gel(data, 2), type)));
+	}
+	gel(rvec, i)=inum;
+  }
+  return gerepilecopy(top, rvec);
+}
+
+//qa_inumseries with typecheck
+GEN qa_inumseries_tc(GEN Q, GEN order, GEN U, GEN e1, GEN e2, GEN N, int type, long prec){
+  pari_sp top=avma;
+  qa_indefcheck(Q);
+  if(typ(U)!=t_VEC || lg(U)!=9) pari_err_TYPE("Please input a fundamental domain", U);
+  qa_eltcheck(e1);
+  qa_eltcheck(e2);
+  if(typ(N)!=t_INT || signe(N)!=1) pari_err_TYPE("Please input a positive integer", N);
+  GEN v1=qa_associatedemb(Q, order, e1, gen_0), v2=qa_associatedemb(Q, order, e2, gen_0);
+  return gerepileupto(top, qa_inumseries(Q, order, U, gel(v1, 1), gel(v2, 1), gel(v1, 2), gel(v2, 2), N, type, prec));
+}
+
+
 //INTERSECTION DATA
 
 
@@ -695,5 +731,25 @@ GEN qa_intlevel_tc(GEN Q, GEN order, GEN e1, GEN e2, GEN D1, GEN D2, long prec){
   if(gequal0(D2)) D2=gel(qa_associatedemb(Q, order, e2, gen_0), 2);//setting discriminnats
   GEN D1D2=mulii(D1, D2);
   return gerepileupto(top, qa_intlevel(Q, order, e1, e2, D1D2, prec));
+}
+
+//Returns the intersection number given the intersection data. type=0 means unsigned, 1=signed, >=2 means q-weighted for q=type.
+GEN qa_inum_fromdata(GEN data, int type){
+  pari_sp top=avma;
+  if(type==0) return stoi(lg(data)-1);
+  long inum=0;
+  if(type==1){
+	for(long i=1;i<lg(data);i++){
+	  if(signe(gel(gel(data, i), 1))==1) inum++;
+	  else inum--;
+	}
+	return stoi(inum);
+  }
+  GEN q=stoi(type);
+  for(long i=1;i<lg(data);i++){
+	inum=inum+signe(gel(gel(data, i), 1))*(1+Z_pval(gel(gel(data, i), 1), q));
+  }
+  avma=top;
+  return stoi(inum);
 }
 
