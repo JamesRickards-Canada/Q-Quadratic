@@ -425,7 +425,7 @@ default(help, "gphelp -detex");
 		addhelp(qa_intlevel,"Inputs Q, order, e1, e2, {D1=0}, {D2=0}: indefinite quaternion algebra Q, initialized Eichler order order, embeddings e1, e2 of discriminants D1, D2 (which do not need to be passed in).\n Returns the pair [signed level,x] corresponding to the embedding pair.");
 	
 	\\GENERAL HELP
-		addhelp(quat_int, "This package deals with intersection numbers of optimal embeddings.\n Methods:\n qa_intlevel, qa_inum_fd, qa_inum_roots, qa_inum_x, qa_xlink, qa_xposs.");
+		addhelp(quat_int, "This package deals with intersection numbers of optimal embeddings.\n Methods:\n qa_intlevel, qa_inum_fd, qa_inum_roots, qa_inum_x, qa_inumseries, qa_xlink, qa_xposs.");
 
 \\qq_visual
 
