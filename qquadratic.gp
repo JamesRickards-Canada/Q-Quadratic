@@ -16,10 +16,6 @@ default(help, "gphelp -detex");
 		install("mat3_complete_tc", "GGG", "mat3_complete", "./libqquadratic.so");
 		addhelp(mat3_complete, "Inputs A,B,C integers with gcd 1.\n Outputs a 3x3 integer matrix with determinant 1 whose top row is [A, B, C].");
 
-	\\RANDOM
-		install("rand_elt","G","rand_elt","./libqquadratic.so");
-		addhelp(rand_elt, "Inputs v, a vector.\n Outputs a random component of the vector.");
-
 	\\TIME
 		install("printtime","v","printtime","./libqquadratic.so");
 		addhelp(printtime, "Prints current time");
@@ -246,10 +242,6 @@ default(help, "gphelp -detex");
 		addhelp(atanoo,"Inputs x, a real number or oo.\n Returns atan(x), with the convention of atan(oo)=Pi/2.");
 		install("shiftangle","GGp","shiftangle","./libqquadratic.so");
 		addhelp(shiftangle,"Inputs ang, bot: angles ang and bot.\n Returns ang+2*Pi*N for the unique integer N such that bot<=ang+2*Pi*N<bot+2*Pi.");
-		/*install("tolcmp","lGGGp","tolcmp","./libqquadratic.so");
-		addhelp(tolcmp,"Inputs x, y, tol: real numbers x, y, positive real tol.\n Returns 1  if x>y, 0 if x==y, and -1 if x<y. This computes if x==y up to tolerance, i.e. if one of x, y is not exact, will return 0 iff |x-y|<tol.");
-		install("toleq","lGGGp","toleq","./libqquadratic.so");
-		addhelp(toleq,"Inputs x, y, tol: complex numbers x, y, positive real tol.\n Computes if x==y up to the tolerance tol. If x and y are exact objects, ignores tolerance, and otherwise returns 1 iff |x-y|<tol.");*/
 		
 	\\GENERAL HELP
 		addhelp(geometry,"This package deals with geometry in the complex plane. Points are complex numbers, with oo being the point at infinity. Circles/lines are represented by length 3 vectors, and circe arcs/line segments are length 8 vectors.\n Subtopics:\n geometryfunctions \n circles \n lines\n hyperbolic distances (hdist)\n fundamental domains (fd)");
@@ -360,7 +352,7 @@ default(help, "gphelp -detex");
 		addhelp(qa_orbitrepsrange,"Inputs Q, order, n: indefinite quaternion algebra Q, initialized Eichler order order, positive integer n.\n Returns the vector of length n whose ith element is qa_orbitreps(Q, order, i).");
 		install("qa_hecke_tc","GGGGp","qa_hecke","./libqquadratic_testing.so");
 		addhelp(qa_hecke,"Inputs Q, order, n, emb: indefinite quaternion algebra Q, initialized Eichler order order, positive integer n, optimal embedding emb.\n Returns the action of T_n on emb. The format is a vector of [m, emb'], where emb' has multiplicity m.");
-	
+
 	\\FUNDAMENTAL DOMAIN METHODS
 		install("qa_fundamentaldomain_tc","GGD0,G,D0,L,D0,G,p","qa_fundamentaldomain","./libqquadratic.so");
 		addhelp(qa_fundamentaldomain,"Inputs Q, order, {p=0}, {dispprogress=0}, {ANRdata=0}: indefinite quaternion algebra Q, Eichler order order, {upper half plane point p (or 0)}, {dispprogress=0, 1}, {ANRdata=0 or length 5 vector}.\n Returns the fundamental domain of order, using Algorithm 4.8 of Voight with (probabilistic) enumeration via Algorithm 11 of Page. If p is passed in as 0, sets it to I/2 (which is never fixed if there is ramification). If dispprogress=1, returns partial results to the screen. The method relies on the constants [A, N, R, 1+nu, epsilon], which can be auto-set if ANRdata=0 or passed in by the user. Passing in a vector with some zero entries will automatically set those entries, and take the user input for the others (e.g. [10, 0, 0, 0, 1] sets A=10, epsilon=1, and auto-sets N, R, 1+nu).");
@@ -395,14 +387,14 @@ default(help, "gphelp -detex");
 		install("vecratio_tc","GG","vecratio","./libqquadratic.so");
 		addhelp(vecratio,"Input v1, v2: vectors in the same 1-dim linear subspace.\n This returns v1/v2. If v1=0, returns 0, and if v2=0, returns oo.");
 
-
 	\\GENERAL HELP
-		addhelp(quat, "This package deals with quaternion algebras.\n Subtopics:\n Basic operations on elements (qabasic)\n Basic operations on orders (qaordbasic)\n Initialization methods (qainit)\n Conjugation of elements in a given order (qaconj)\n Embedding quadratic orders (qaemb)\n Fundamental domain (qafdom)\n Supporting methods (qasupport)");
+		addhelp(quat, "This package deals with quaternion algebras.\n Subtopics:\n Basic operations on elements (qabasic)\n Basic operations on orders (qaordbasic)\n Initialization methods (qainit)\n Conjugation of elements in a given order (qaconj)\n Embedding quadratic orders (qaemb)\n Elements of norm n (qanormn)\n Fundamental domain (qafdom)\n Supporting methods (qasupport)");
 		addhelp(qabasic, "qa_conj, qa_conjby, qa_inv, qa_m2rembed, qa_minpoly, qa_mul, qa_mulvec, qa_mulvecindices, qa_norm, qa_pow, qa_roots, qa_square, qa_trace.");
 		addhelp(qaordbasic, "qa_isinorder, qa_isorder, qa_leftorder, qa_rightorder, qa_ord_conj, qa_ord_disc, qa_superorders.");
 		addhelp(qainit, "qa_eichlerorder, qa_ord_init, qa_init_ab, qa_init_primes, qa_init_2primes, qa_maximalorder, qa_ram_fromab");
 		addhelp(qaconj, "qa_conjbasis, qa_conjqf, qa_conjnorm, qa_simulconj")
 		addhelp(qaemb, "qa_associatedemb, qa_embed, qa_embeddablediscs, qa_numemb, qa_ordiffer, qa_orinfinite, qa_sortedembed.");
+		addhelp(qanormn, "qa_orbitreps, qa_orbitrepsrange, qa_hecke");
 		addhelp(qafdom, "qa_fundamentaldomain, qa_fdarea, qa_isometriccircle, qa_normalizedbasis, qa_normalizedboundary, qa_printisometriccircles, qa_reduceelt, qa_rootgeodesic_fd, qa_smallnorm1elts, qa_topsu.");
 		addhelp(qasupport, "module_intersect, powerset, prime_ksearch, QM_hnf, vecratio.");
 
@@ -434,7 +426,6 @@ default(help, "gphelp -detex");
 	
 	\\GENERAL HELP
 		addhelp(quat_int, "This package deals with intersection numbers of optimal embeddings.\n Methods:\n qa_intlevel, qa_inum_fd, qa_inum_roots, qa_inum_x, qa_xlink, qa_xposs.");
-
 
 \\qq_visual
 
