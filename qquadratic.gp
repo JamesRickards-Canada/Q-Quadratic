@@ -448,3 +448,4 @@ qquad_library=strprintf("./libqquadratic-%d-%d.so", parigp_version[1], parigp_ve
 		
 		addhelp(hist,"hist_make, hist_rebin, hist_recompile, hist_rerange, hist_rescale.");
 
+default(parisize, "4096M");\\Must come at the end
