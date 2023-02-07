@@ -30,7 +30,6 @@ all: $(DYN)
 #Rule to build the library
 $(DYN): $(OBJS)
 	$(MODLD) -o $@ $(MODLDFLAGS) $(EXTRACFLAGS) $(OBJS) $(EXTRAMODLDFLAGS)
-	mv $@ ..
 
 #Rule to make the object files
 %.o: %.c

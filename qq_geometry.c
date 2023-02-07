@@ -883,7 +883,7 @@ GEN edgepairing(GEN U, GEN tol, int rboth, long prec){
     ind1=i;
     vim=mat_eval(gel(gel(U, 5), i), gel(gel(U, 3), ind1));//The new vertex
     vimang=shiftangle(garg(vim, prec), baseangle, tol, prec);//The new angle
-    i1=gen_search(vangles, vimang, 0, &toldata, &tolcmp_sort);
+    i1=gen_search(vangles, vimang, &toldata, &tolcmp_sort);
     if(i1!=0) if(!toleq(vim, gel(gel(U, 3), i1), tol, prec)) i1=0;//Just because the angles are equal, the points don't have to be (though this occurence is expected to be extremely rare).
     if(i==1) ind2=lU-1;
     else ind2=i-1;//The two vertices of the side, this is the second one
@@ -899,7 +899,7 @@ GEN edgepairing(GEN U, GEN tol, int rboth, long prec){
     }
     else{//ind1 not paired
       vimang=shiftangle(garg(vim, prec), baseangle, tol, prec);//The second new angle
-      i2=gen_search(vangles, vimang, 0, &toldata, &tolcmp_sort);
+      i2=gen_search(vangles, vimang, &toldata, &tolcmp_sort);
       if(i2!=0) if(!toleq(vim, gel(gel(U, 3), i2), tol, prec)) i2=0;//Just because the angles are equal, the points don't have to be (though this occurence is expected to be extremely rare).
       if(i2!=0) vectrunc_append(unpair, mkvecsmall2(i, ind1));//First vtx not paired
        else vectrunc_append(unpair, mkvecsmall3(i, ind1, ind2));//Neither vtx paired
@@ -1756,7 +1756,7 @@ long normalizedboundary_outside(GEN U, GEN z, GEN tol, long prec){
   }
   pari_TRY{
     GEN ang=shiftangle(garg(z, prec), gel(gel(U, 4), 1), tol, prec);//Shifting to base angle
-    long ind=gen_search(gel(U, 4), ang, 1, NULL, &gcmp_strict);//Index to put z. We ONLY need to search for this cicle.
+    long ind=-gen_search(gel(U, 4), ang, NULL, &gcmp_strict);//Index to put z. We ONLY need to search for this cicle.
     if(ind==lg(gel(U, 1))) ind=1;//Insert at the end means the first circle.
     GEN circle=gel(gel(U, 2), ind);
     if(gequal0(circle)){pari_CATCH_reset();avma=top;return -1;}//Intersects with the edge of the unit disc.
