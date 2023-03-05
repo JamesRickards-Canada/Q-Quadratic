@@ -512,7 +512,7 @@ GEN qa_superorders(GEN Q, GEN ord, GEN n){
   return gerepileupto(top, currentords);
 }
 
-//TEMPORARY
+//TEMPORARY.
 void tempmatfix(GEN M){
   for(long i=1;i<lg(M);i++) gel(M, i)=gtocol(gel(M, i));
 }
