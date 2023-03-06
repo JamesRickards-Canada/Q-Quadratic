@@ -512,11 +512,6 @@ GEN qa_superorders(GEN Q, GEN ord, GEN n){
   return gerepileupto(top, currentords);
 }
 
-//TEMPORARY.
-void tempmatfix(GEN M){
-  for(long i=1;i<lg(M);i++) gel(M, i)=gtocol(gel(M, i));
-}
-
 //Finds all superorders ord' such that the index of ord in ord' is n. ord' should be an order and n is prime.
 GEN qa_superorders_prime(GEN Q, GEN ord, GEN ordinv, GEN n){
   pari_sp top=avma;
@@ -542,15 +537,12 @@ GEN qa_superorders_prime(GEN Q, GEN ord, GEN ordinv, GEN n){
 	A=gmael3(space, 1, i1, 2);
 	for(long i2=1;i2<nspace[2];i2++){
 	  B=FpM_intersect(A, gmael3(space, 2, i2, 2), n);
-	  tempmatfix(B);//TEMPORARY
 	  if(lg(B)==1) continue;//Nope
 	  for(long i3=1;i3<nspace[3];i3++){
 		C=FpM_intersect(B, gmael3(space, 3, i3, 2), n);
-		tempmatfix(C);//TEMPORARY
 	    if(lg(C)==1) continue;//Nope
 	    for(long i4=1;i4<nspace[4];i4++){
 		  D=FpM_intersect(C, gmael3(space, 4, i4, 2), n);
-		  tempmatfix(D);//TEMPORARY
 		  if(lg(D)==1) continue;//Nope
 		  else if (lg(D)>2) pari_err_TYPE("D unexpectedly had dimension >1, please report this bug.", D);
 		  D=gdiv(gadd(gadd(gmul(gel(ord, 1), gcoeff(D, 1, 1)), gmul(gel(ord, 2), gcoeff(D, 2, 1))), gadd(gmul(gel(ord, 3), gcoeff(D, 3, 1)), gmul(gel(ord, 4), gcoeff(D, 4, 1)))), n);//Creating the original element by translating back to [1, i, j, k] coeffs and dividing by n
