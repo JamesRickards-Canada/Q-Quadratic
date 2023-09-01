@@ -1,14 +1,17 @@
-#Change this to where PARI/GP is installed.
-PARI_LOC = /usr/local
-
+#If PARI/GP is not installed in /usr/local, make a file called "pari_loc.txt" and put the correct path there.
+PARIOTHERLOC = pari_loc.txt
+OTHERLOC = $(file < $(PARIOTHERLOC))
+ifeq ($(OTHERLOC), )
+	PARI_LOC = /usr/local
+else
+	PARI_LOC = $(OTHERLOC)
+endif
 #The files we want to include
 SRCS = qq_base.o qq_bqf.o qq_bqf_int.o qq_geometry.o qq_quat.o qq_quat_int.o qq_visual.o
 
 #Name of the output library
 TARGET = qquadratic
 
-
-#Nothing after here should need to be changed.
 
 #More locations
 PARI_LIB = $(PARI_LOC)/lib
