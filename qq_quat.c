@@ -1819,7 +1819,7 @@ In fact, it is r=-f/h-I/(2*h*sqrt(a/3)), where f^2-bh^2=-3/(4a) (coming from 1/2
 GEN qa_fundamentaldomain(GEN Q, GEN order, GEN p, int dispprogress, GEN ANRdata, GEN tol, long prec){
   pari_sp top=avma, mid;
   GEN mats=psltopsu_transmats(p), area=qa_fdarea(Q, order, prec);//Matrices and area
-  
+
   GEN A, N, R, opnu, epsilon;//Constants used for bounds, can be auto-set or passed in.
   if(gequal0(ANRdata) || gequal0(gel(ANRdata, 1))){//A
     GEN alpha=stoi(10);//Constants as in Page, page 19.
@@ -1842,7 +1842,6 @@ GEN qa_fundamentaldomain(GEN Q, GEN order, GEN p, int dispprogress, GEN ANRdata,
   else epsilon=gel(ANRdata, 5);
   
   if(dispprogress) pari_printf("Initial constants:\n   A=%Ps\n   N=%Ps\n   R=%Ps\nGrowth constants:\n   1+nu=%Ps\n   epsilon=%Ps\nTarget Area: %Ps\n\n", A, N, R, opnu, epsilon, area);
-  
   long iN;
   GEN points, w, invrad;
   GEN U=cgetg(2, t_VEC);
@@ -1852,22 +1851,22 @@ GEN qa_fundamentaldomain(GEN Q, GEN order, GEN p, int dispprogress, GEN ANRdata,
   mid=avma;
   long pass=0;
   for(;;){
-	iN=itos(gfloor(N))+1;
-	if(dispprogress){pass++;pari_printf("Pass %d with %Ps random points in the ball of radius %Ps\n", pass, N, R);}
-	points=cgetg(iN, t_VEC);
-	for(long i=1;i<iN;i++){
-	  w=randompoint_ud(R, prec);//Random point
-	  invrad=qa_invradqf(Q, order, mats, w, prec);
-	  gel(points, i)=qa_smallnorm1elts_invrad(Q, order, gen_0, A, invrad, prec);
-	}
-	points=shallowconcat1(points);
-	if(dispprogress) pari_printf("%d elements found\n", lg(points)-1);
-	U=normalizedbasis(points, U, mats, id, &Q, &qa_fdm2rembed, &qa_fdmul, &qa_fdinv, &qa_istriv, tol, prec);
-	if(dispprogress) pari_printf("Current normalized basis has %d sides and an area of %Ps\n\n", lg(gel(U, 1))-1, gel(U, 6));
-    if(toleq(area, gel(U, 6), tol, prec)) return gerepileupto(top, U);
-	N=gmul(N, opnu);//Updating N_n
-	R=gadd(R, epsilon);//Updating R_n
-	if(gc_needed(top, 2)) gerepileall(mid, 3, &U, &N, &R);
+    iN=itos(gfloor(N))+1;
+    if(dispprogress){pass++;pari_printf("Pass %d with %Ps random points in the ball of radius %Ps\n", pass, N, R);}
+    points=cgetg(iN, t_VEC);
+    for(long i=1;i<iN;i++){
+      w=randompoint_ud(R, prec);//Random point
+      invrad=qa_invradqf(Q, order, mats, w, prec);
+      gel(points, i)=qa_smallnorm1elts_invrad(Q, order, gen_0, A, invrad, prec);
+    }
+    points=shallowconcat1(points);
+    if(dispprogress) pari_printf("%d elements found\n", lg(points)-1);
+    U=normalizedbasis(points, U, mats, id, &Q, &qa_fdm2rembed, &qa_fdmul, &qa_fdinv, &qa_istriv, tol, prec);
+    if(dispprogress) pari_printf("Current normalized basis has %d sides and an area of %Ps\n\n", lg(gel(U, 1))-1, gel(U, 6));
+      if(toleq(area, gel(U, 6), tol, prec)) return gerepileupto(top, U);
+    N=gmul(N, opnu);//Updating N_n
+    R=gadd(R, epsilon);//Updating R_n
+    if(gc_needed(top, 2)) gerepileall(mid, 3, &U, &N, &R);
   }
 }
 

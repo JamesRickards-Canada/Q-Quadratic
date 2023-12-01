@@ -20,6 +20,9 @@ typedef struct listtype3{//A generic linked list of longs, stores data and next 
 
 //METHODS
 
+//SEARCHING
+long gen_search_old(GEN T, GEN x, long flag, void *data, int (*cmp)(void*, GEN, GEN));
+
 //INFINITY 
 GEN addoo(GEN a, GEN b);
 GEN divoo(GEN a, GEN b);

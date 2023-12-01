@@ -20,6 +20,26 @@ static int opp_gcmp(void *data, GEN x, GEN y);
 static GEN quadraticinteger(GEN A, GEN B, GEN C);
 
 
+//SEARCHING
+
+//Old version of gen_search, this is how the code was originally, so we just copy it over here.
+long
+gen_search_old(GEN T, GEN x, long flag, void *data, int (*cmp)(void*, GEN, GEN))
+{
+  long u = lg(T)-1, i, l, s;
+
+  if (!u) return flag? 1: 0;
+  l = 1;
+  do
+  {
+    i = (l+u)>>1; s = cmp(data, x, gel(T,i));
+    if (!s) return flag? 0: i;
+    if (s<0) u=i-1; else l=i+1;
+  } while (u>=l);
+  if (!flag) return 0;
+  return (s<0)? i: i+1;
+}
+
 
 //INFINITY 
 
