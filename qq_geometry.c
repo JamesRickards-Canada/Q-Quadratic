@@ -1,14 +1,7 @@
 //Geometry methods
 
-#ifndef PARILIB
-#define PARILIB
-#include <pari/pari.h>
-#endif
-
-#ifndef METHDECL
-#define METHDECL
+#include <pari.h>
 #include "qquadraticdecl.h"
-#endif
 
 //The length (lg, so technically length+1) of a circle/line and arc/segment, and a normalized boundary
 #define CIRCLEN 4

@@ -1,19 +1,8 @@
 //This is a collection of miscellaneous methods that may be useful in a variety of settings, and not just for the programs they were originally created for.
 
-#ifndef PARILIB
-#define PARILIB
-#include <pari/pari.h>
-#endif
-
-#ifndef METHDECL
-#define METHDECL
+#include <pari.h>
 #include "qquadraticdecl.h"
-#endif
-
-#ifndef TIME
-#define TIME
 #include <time.h>
-#endif
 
 //STATIC METHOD DECLARATIONS
 static int opp_gcmp(void *data, GEN x, GEN y);

@@ -1,12 +1,7 @@
-#ifndef PARILIB
-#define PARILIB
-#include <pari/pari.h>
-#endif
 
-#ifndef METHDECL
-#define METHDECL
+#include <pari.h>
 #include "qquadraticdecl.h"
-#endif
+
 
 //STATIC DECLARATIONS
 static GEN bqf_iform(GEN q1, GEN q2);

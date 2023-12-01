@@ -1,14 +1,7 @@
 //Quaternionic methods over Q
 
-#ifndef PARILIB
-#define PARILIB
-#include <pari/pari.h>
-#endif
-
-#ifndef METHDECL
-#define METHDECL
+#include <pari.h>
 #include "qquadraticdecl.h"
-#endif
 
 //The length (lg, so technically length+1) of a quaternion algebra entry and an initialized quaternion order.
 #define QALEN 5

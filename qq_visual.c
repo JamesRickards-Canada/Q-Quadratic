@@ -1,19 +1,8 @@
 //Methods for visualization and data compaliation
 
-#ifndef PARILIB
-#define PARILIB
-#include <pari/pari.h>
-#endif
-
-#ifndef METHDECL
-#define METHDECL
+#include <pari.h>
 #include "qquadraticdecl.h"
-#endif
-
-#ifndef STDLIB
-#define STDLIB
 #include <stdlib.h>
-#endif
 
 
 //Should also write the data to a file and offer ways to make the histogram from a file of data.

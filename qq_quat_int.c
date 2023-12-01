@@ -1,14 +1,7 @@
 //Intersections in quaternion algebras over Q
 
-#ifndef PARILIB
-#define PARILIB
-#include <pari/pari.h>
-#endif
-
-#ifndef METHDECL
-#define METHDECL
+#include <pari.h>
 #include "qquadraticdecl.h"
-#endif
 
 
 //STATIC DECLARATIONS
