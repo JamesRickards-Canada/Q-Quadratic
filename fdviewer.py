@@ -466,5 +466,4 @@ if __name__=='__main__':
 	fig.canvas.mpl_connect('pick_event', op_man.onclick)
 	fig.canvas.mpl_connect('key_press_event', op_man.keypress)
 
-	fig.canvas.set_window_title(' '.join(sys.argv[1:]))
 	plt.show()
