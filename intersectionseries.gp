@@ -5,8 +5,6 @@ Load both qquadratic and this file into a GP session, and call any of the 4 is_e
 Call "makeseries" on any output to make a LaTeX version of the output.
 */
 
-default(parisize, "4096M");\\4 GB of memory.
-
 is_ex11(N=50, dooutput=1)={\\N coefficients
   my(Q, order, U, e1, e2, S);
   [Q, order]=qa_init_2primes(5, 7);\\Algebra and order
