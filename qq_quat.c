@@ -1868,7 +1868,11 @@ GEN qa_fundamentaldomain_tc(GEN Q, GEN order, GEN p, int dispprogress, GEN ANRda
   pari_sp top=avma;
   qa_indefcheck(Q);
   qa_ordeichlercheck(order);
-  if(gequal0(p)) p=gdivgs(gen_I(), 2);
+  if(gequal0(p)) {
+    p = cgetg(3, t_COMPLEX);
+    gel(p, 1) = Pi2n(-3, prec);
+    gel(p, 2) = real2n(-1, prec);
+  }
   if(typ(p)!=t_COMPLEX || gsigne(gel(p, 2))!=1) pari_err_TYPE("Please enter an upper half plane point", p);
   if(!gequal0(ANRdata) && !(typ(ANRdata)==t_VEC && lg(ANRdata)==6)) pari_err_TYPE("Please enter a length 5 vector or 0", ANRdata);
   GEN tol=deftol(prec);
