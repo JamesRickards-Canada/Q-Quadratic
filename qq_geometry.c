@@ -937,9 +937,9 @@ GEN isometriccircle_mats(GEN g, GEN mats, GEN *data, GEN (*gamtopsl)(GEN *, GEN,
   }
   pari_TRY{
     do{
-      if(newprec-prec==5) pari_err(e_MISC,"Throw");
+      if((prec2nbits(newprec) / prec2nbits(prec)) >=5) pari_err(e_MISC,"Throw");
       avma=top;
-      newprec++;//Increase precision
+      newprec = nbits2prec(prec2nbits(newprec) + DEFAULTPREC);//Increase precision
       tol=deftol(newprec);
       if(precision(gel(mats, 3))>0){//p is inexact
         GEN p=gtofp(gel(mats, 3), newprec);
@@ -2169,9 +2169,10 @@ int geom_check(GEN c){
 }
 
 //Returns the default tolerance given the precision.
-GEN deftol(long prec){
-  pari_sp top=avma;
-  return gerepileupto(top, gtofp(powis(gen_2, 32*(2-prec)), prec));
+GEN
+deftol(long prec)
+{
+  return real2n(-(prec2nbits(prec) >> 1), prec);
 }
 
 //Shifts the given angle ang by multiples of 2*Pi into the range [bot, bot+2*Pi).
