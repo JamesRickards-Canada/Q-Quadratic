@@ -6,7 +6,7 @@ OBJS = qq_base.o qq_bqf.o qq_bqf_int.o qq_geometry.o qq_quat.o qq_quat_int.o qq_
 TARGET = qquadratic
 #Nothing after here should be modified, unless you know what you are doing.
 
-#PARI_LIB is where libpari.so is found, PARI_INCLUDE is where the .h header files are found, and PARI_CFG is where pari.cfg is found.
+#PARI_LIB is where libpari.so or .dylib is found, PARI_INCLUDE is where the .h header files are found, and PARI_CFG is where pari.cfg is found.
 PARI_ALT_LOC = pari_loc.txt
 ALT_LOCK_PATHS = $(file < $(PARI_ALT_LOC))
 ifeq ($(ALT_LOCK_PATHS), )
@@ -20,6 +20,7 @@ PARI_CFG = $(PARI_LIB)/pari/pari.cfg
 
 #Naming the library file to include the version of pari/gp.
 VER = $(shell grep "pari_release=" "$(PARI_CFG)" -s | cut -d"'" -f2 | tr . - | cut -d"-" -f1,2)
+
 DYN = lib$(TARGET)-$(VER).so
 
 #Compiling options
@@ -32,7 +33,7 @@ all: $(DYN)
 
 #Build the shared library object
 $(DYN): $(OBJS)
-	$(CC) -o $@ -shared	$(CFLAGS) -Wl,-shared $(OBJS) -lc -lm -L$(PARI_LIB) -lpari
+	$(CC) -o $@ -shared	$(CFLAGS) -Wl -shared $(OBJS) -lc -lm -L$(PARI_LIB) -lpari
 
 #Make the object files
 %.o: %.c
@@ -49,9 +50,9 @@ setup:
 	if [ "$$SEARCHLOC" = "" ] ; then \
 		SEARCHLOC="/usr"; \
 	fi; \
-	printf "Searching for \e[32mlibpari.so\e[0m:\n"; \
-	FOUNDLOCS=$$(find $$SEARCHLOC -name libpari.so 2>/dev/null); \
-	printf "Here are the places we found \e[32mlibpari.so\e[0m:\n\e[32m"; \
+	printf "Searching for \e[32mlibpari.so\e[0m or .\e[32mdylib\e[0m:\n"; \
+	FOUNDLOCS=$$(find $$SEARCHLOC -name libpari.so -o -name libpari.dylib 2>/dev/null); \
+	printf "Here are the places we found \e[32mlibpari\e[0m:\n\e[32m"; \
 	for poss in $$FOUNDLOCS; do \
 		printf "\t$$poss\n"; \
 	done; \
@@ -72,7 +73,7 @@ setup:
 	printf "$${LIBLOC%/*} " > ./pari_loc.txt; \
 	printf "Searching for \e[32mparipriv.h\e[0m:\n"; \
 	FOUNDLOCS=$$(find $$SEARCHLOC -name paripriv.h 2>/dev/null); \
-	printf "Here are the places we found \e[32mlibpari.so\e[0m:\n\e[32m"; \
+	printf "Here are the places we found \e[32mparipriv.h\e[0m:\n\e[32m"; \
 	for poss in $$FOUNDLOCS; do \
 		printf "\t$$poss\n"; \
 	done; \
