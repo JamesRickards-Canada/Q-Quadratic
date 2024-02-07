@@ -14,7 +14,7 @@ This package is not regularly maintained, and with updates to PARI/GP some thing
 
 4. If the program finds potential matches, it will ask you to confirm which files are correct, and saves them to "pari_loc.txt". Once this step completes, a call to "make" will compile the project! Modifying the program (e.g. via git pull) won't require redoing this setup, unless the version of PARI/GP or Sage you use changes.
 
-5. Call "gp isogeny" to start gp and load the methods. ?qq accesses the help.
+5. Call "gp qquadratic" to start gp and load the methods. ?qq accesses the help.
 
 6. Call "make clean" to clean up the object files created.
 
