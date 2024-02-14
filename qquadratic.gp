@@ -1,8 +1,8 @@
 print("\n\nType '?qq' for help.\n\n");
 addhelp(qq, "For each package P, call ?P to access a basic description and list of methods. Installed packages: \n base \n bqf \n bqf_int \n geometry \n quat \n quat_int \n visual");
 default(help, "gphelp -detex");
-parigp_version=version();
-qquad_library=strprintf("./libqquadratic-%d-%d.so", parigp_version[1], parigp_version[2]);
+parigp_version = version();
+qquad_library = strprintf("./libqquadratic-%d-%d-%d.so", parigp_version[1], parigp_version[2], parigp_version[3]);
 
 \\qq_base
 
