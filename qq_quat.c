@@ -229,7 +229,7 @@ GEN qa_pow(GEN Q, GEN x, GEN n){
   if(signe(n)==-1){x=qa_inv(Q, x);n=negi(n);}
   GEN dig=binary_zv(n);
   GEN qpow=gcopy(x);
-  for(long i=1;i<lg(dig);i++){
+  for(long i=2;i<lg(dig);i++){
 	qpow=qa_square(Q, qpow);
 	if(dig[i]==1) qpow=qa_mul(Q, qpow, x);
   }
