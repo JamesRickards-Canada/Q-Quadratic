@@ -1,32 +1,48 @@
 # Q Quadratic
 A PARI/GP package for integral binary quadratic forms and quaternion algebras over Q, with an emphasis on indefinite quadratic forms and indefinite quaternion algebras.
 
-At the moment, this package is compatible with versions 2.13.1 and later. If you are on Windows, then you must use Windows Subsystem for Linux (WSL).
-
 This package is not regularly maintained, and with updates to PARI/GP some things may break. If they do, please let me know, and I will try to fix them.
 
-## Installation
-1. git clone this repository
+## Installation Instructions
 
-2. You need to know where the version of PARI/GP you want to use is installed. The default location is inside /usr/local, but this may change based on your Linux distro, or if you want to use it through SageMath. If you think it is installed in the default location, you can simply call "make".
+### Downloading the code
+Call ```git clone https://github.com/JamesRickards-Canada/Q-Quadratic.git```. If you are on Windows, be sure to git clone from WSL (see below), as Windows line endings (carriage returns) may be added to files, causing issues.
 
-3. Otherwise, call "make setup" to search for the correct files. By default the program searches in "/usr", but there is a chance it is not installed there (this sometimes happens on a server). If this is the case, you can supply an alternate location.
+### Prerequisites
+* PARI/GP, but _not_ the downloaded ready-to-go binary. The PARI/GP website has binaries for Windows and Mac avaliable, but these will not work with the package. See below for OS specific instructions.
+* Version at least 2.13.1, though the more up-to-date the better.
+* You should have a guess as to the location of the ```pari.cfg``` file for the version of PARI/GP you are running. Suggestions on how to do this can be found below.
 
-4. If the program finds potential matches, it will ask you to confirm which files are correct, and saves them to "pari_loc.txt". Once this step completes, a call to "make" will compile the project! Modifying the program (e.g. via git pull) won't require redoing this setup, unless the version of PARI/GP or Sage you use changes.
+### Operating systems
+* **Linux** - No further requirements
+* **Windows** - You need to use Windows Subsytem for Linux. See the [guide](https://pari.math.u-bordeaux.fr/PDF/PARIwithWindows.pdf) I wrote for additional instructions.
+* **Mac** - You need to have [Homebrew](https://brew.sh/) installed. This is also an easy way to install PARI/GP: ```brew install pari```
 
-5. Call "gp qquadratic" to start gp and load the methods. ?qq accesses the help.
+### Where is pari.cfg?
+* The configuration file will search for this, but it is preferrable to not search your entire hard drive (as this can be very slow). So, you should at least supply a guess as to the location of ```pari.cfg```. Often only the top-level folder (e.g. ```/usr``` or ```/opt```) suffices.
+* On Linux or WSL, if you build PARI/GP from source, it should be located in ```/usr/local/lib/pari/pari.cfg```, or at least somewhere in the ```/usr``` folder.
+* On a Mac, if you install PARI/GP with Homebrew, it may be found in a folder like ```/opt/homebrew/Cellar/pari/VERSION/lib/pari```. Searching ```/opt/homebrew``` should be fine.
+* If you are obtaining it through SageMath, it might be found where the library files of SageMath are
+* Assuming you open PARI/GP with the command ```gp```, try ```type -a gp```, which will display where this command lives. The corresponding file(s) are likely symbolic links, and you can call ```readlink -f LOCATION``` on each of them to see where it lives. This can provide a clue as to the place to search for ```pari.cfg```.
+* Another clue comes from gp itself. Open gp, and type ```default()```. Look for the entries ```datadir``` and ```help```. It is _often_ the case that ```datadir``` is in ```X/share/pari```, ```help``` is in ```X/bin/gphelp```, and ```pari.cfg``` is in ```X/lib/pari/pari.cfg```.
 
-6. Call "make clean" to clean up the object files created.
+### Configuring and building the package
+* From inside the project folder, call ```./configure``` to initialize the project. This helps you search for ```pari.cfg```, and stores the location to a file. You should supply it with a folder to search in!
+* The script displays the corresponding versions of the found files, so if you have multiple versions, you can choose the correct one. This can be useful if you keep multiple copies of PARI/GP around.
+* If the location of the installation of PARI/GP does not change, you do not need to reconfigure. If when you update PARI/GP there is a new location (e.g. if the version number is in the file path of ```pari.cfg```), you should call ```./configure``` again.
+* Call ```make``` to build the project, and ```make clean``` to remove all .o object files. If you update to a new version of PARI/GP, you must remake the project.
+* Once this is done, a call to ```gp qquadratic``` starts gp with the package installed!
+* Call ```?qq``` or consult the [User's Manual](QQuadratic_GP_guide.pdf) to access further help for this package.
 
 ## Documentation
 
-The file "QQuadratic_GP_guide" is a guide to the GP-accessible methods. It may be slightly out of date.
+The file [QQuadratic_GP_guide.pdf](QQuadratic_GP_guide.pdf) is a guide to the GP-accessible methods. It may be slightly out of date.
 
-The file "QQuadratic_PARI_guide" is a guide to using this package in library mode. It too may be slightly out of date.
+The file [QQuadratic_PARI_guide.pdf](QQuadratic_PARI_guide.pdf) is a guide to using this package in library mode. It too may be slightly out of date.
 
 ## Papers
 
-All relevant computations from my [thesis](https://math.colorado.edu/~jari2770/PDFs/thesis.pdf) were made with this package. The same can be said for the 3 papers that emanated from this thesis:
+All relevant computations from my [thesis](https://jamesrickards-canada.github.io/PDFs/thesis.pdf) were made with this package. The same can be said for the 3 papers that emanated from this thesis:
 * [Computing intersections of closed geodesics on the modular curve](https://doi.org/10.1016/j.jnt.2020.11.024)
 * [Counting intersection numbers of closed geodesics on Shimura curves](https://rdcu.be/c7DBo)
 * [Hecke operators acting on optimal embeddings in indefinite quaternion algebras](https://doi.org/10.4064/aa210723-11-7)
