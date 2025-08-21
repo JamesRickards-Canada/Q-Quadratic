@@ -1,0 +1,77 @@
+#CONFIGURATION FILE - update to project name (make it $(TARGET).cfg, where TARGET is in the Makefile)
+CFIL="qquadratic.cfg"
+
+#COLOURS
+NC='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m' 
+PURPLE='\033[0;35m'
+
+#Finding pari.cfg location.
+printf "We need to find the location of the ${RED}configuration file${NC} (${GREEN}pari.cfg${NC}), which contains the location of the ${RED}compiled library${NC} (${GREEN}libpari.so${NC} and the ${RED}header files${NC}. The standard location is:\n\t${GREEN}/usr/local/lib/pari/pari.cfg${NC},\nbut this can depend on the system.\n"
+while true; do
+  printf "Where should we look for ${GREEN}pari.cfg${NC}? (default is ${GREEN}/usr${NC})\n"
+  #Retrieve the user input
+  read -r -p " " SEARCHLOC
+  if [ "$SEARCHLOC" = "" ]; then
+    SEARCHLOC="/usr"
+  fi
+  printf "Searching for ${GREEN}pari.cfg${NC}:\n"
+  FOUNDLOCS=$(find $SEARCHLOC -name pari.cfg 2>/dev/null)
+  
+  #Test if anything was found
+  if [ "${FOUNDLOCS}" = "" ]; then
+    printf "${RED}No file found${NC}. Perhaps PARI/GP is installed in a different directory than what you supplied? Try supplying another directory or searching in '/', which may be very slow.\nThe command ${RED}type -a gp${NC} may also help you get an idea of approximately where to look. If this is a link, call ${RED}readlink -f (insert location)${NC} to see where it is linked to.\nSimilarly, ${RED}open gp${NC}, and type in ${RED}default()${NC}. Look at the values of ${RED}datadir${NC} and ${RED}help${NC}. The file is often located in ${RED}(path to help)/../../lib/pari/pari.cfg${NC}, or at least, in a nearby folder.\n\n\n"
+    continue
+  fi
+  
+  #Print out the found files and version numbers
+  FOUNDARRAY=()
+  IND=1
+  printf "Here are the places we found ${GREEN}pari.cfg${NC}:\n"
+  for POSS in $FOUNDLOCS; do
+    FOUNDARRAY+=($POSS)
+    VER=$(grep pari_release= ${POSS} -s | cut -d"'" -f2 | cut -d"-" -f1,2,3)
+    printf "\t${PURPLE}${IND}${NC}: Version ${YELLOW}${VER}${NC}\tLocation ${GREEN}${POSS}${NC}\n"
+    ((IND++))
+  done;
+  ((IND--))
+
+  #Determine which are correct, if any.
+  printf "Which one is correct? If none, type 0.\n"
+  while true; do
+    read CFGNUM
+    if [ $CFGNUM -ge 0 ] && [ $CFGNUM -le $IND ]; then
+      break;
+    fi
+    printf "Please give an answer from ${PURPLE}1${NC} to ${PURPLE}${IND}${NC}\n"
+  done
+
+  #User selected none
+  if test $CFGNUM -eq 0; then
+    printf "${RED}No file selected${NC}. Perhaps PARI/GP is installed in a different directory than what you supplied? Try supplying another directory or searching in '/', which may be very slow.\nThe command ${RED}type -a gp${NC} may also help you get an idea of approximately where to look. If this is a link, call ${RED}readlink -f (insert location)${NC} to see where it is linked to.\nSimilarly, ${RED}open gp${NC}, and type in ${RED}default()${NC}. Look at the values of ${RED}datadir${NC} and ${RED}help${NC}. The file is often located in ${RED}(path to help)/../../lib/pari/pari.cfg${NC}, or at least, in a nearby folder.\n\n\n"
+  else
+    ((CFGNUM--))
+    CFGLOC=${FOUNDARRAY[${CFGNUM}]}
+    break
+  fi
+done
+
+#Save the CFG location.
+printf "CFG='${CFGLOC}'\n" > $CFIL
+
+#Determine the OS
+UNAME=`uname -a`
+if grep -q Microsoft <<< $UNAME; then
+  OS="WSL"
+elif grep -q Linux <<< $UNAME; then
+  OS="Linux"
+else
+  OS="Mac"
+fi
+printf "OS='${OS}'\n" >> $CFIL
+
+#Done!
+printf "${RED}Setup complete${NC}!\n"
