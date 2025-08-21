@@ -447,5 +447,3 @@ qquad_library = strprintf("./libqquadratic-%d-%d-%d.so", parigp_version[1], pari
 		addhelp(visual,"This package deals with visualizing data. Subtopics:\n Histograms (hist)");
 		
 		addhelp(hist,"hist_make, hist_rebin, hist_recompile, hist_rerange, hist_rescale.");
-
-default(parisize, "4096M");\\Must come at the end
