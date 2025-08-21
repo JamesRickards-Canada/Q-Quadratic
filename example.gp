@@ -1,0 +1,9 @@
+[Q, ord] = qa_init_2primes(2, 11) /*Initialize quat alg and max order. Can't use variable O*/
+dsc = qa_embeddablediscs(Q, ord, 1, 300) /*What discriminants we can embed between 1 and 100*/
+cl = bqf_ncgp_lexic(205) /*Narrow class group for disc 205 with representatives in lexicographic ordering*/
+e1 = qa_sortedembed(Q, ord, 205) /*All embeddings of disc 29, sorted by class group action and orientation*/
+e2 = qa_embed(Q, ord, 61) /*All embeddings of 61, but just in a vector and not sorted*/
+u = qa_inum_x(Q, ord, e1[1,2][1], e2[1]) /*Find intersections of e1 and e2*/
+v = qa_inum_roots(Q, ord, e1[1,2][1], e2[1]) /*Same as u, but uses different method. qa_inum_x is typically much faster*/
+fd = qa_fundamentaldomain(Q, ord); /*Compute the fundamental domain. Code is pretty fast, but not nearly as good as the updated Fundamental-domains-for-Shimura-curves project. There may also be some old stray bugs.*/
+w = qa_inum_fd(Q, ord, fd, e1[1,2][1], e2[1]) /*Same as u and v, but the fastest, GIVEN the precomputation of the fundamental domain*/
